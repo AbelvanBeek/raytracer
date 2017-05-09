@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace template.Primitives
+namespace template
 {
     public class Scene
     {
