@@ -66,7 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="game.cs" />
+    <Compile Include="Light.cs" />
     <Compile Include="Primitives\Primitive.cs" />
     <Compile Include="Primitives\Plane.cs" />
     <Compile Include="Raytracer.cs" />
