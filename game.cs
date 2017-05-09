@@ -21,7 +21,8 @@ namespace Template
 		    screen.Clear( 0 );
 		    screen.Print( "Hello World!", 2, 2, 0xffffff );
             screen.Line(2, 20, 160, 20, 0xff0000);
-	    }
+            screen.Line(513, 0, 513, 513, 0xff0000);
+        }
     }
 
 }
