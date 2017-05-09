@@ -8,5 +8,13 @@ namespace template
 {
     class Raytracer
     {
+        Scene scene;
+        Camera camera;
+        Template.Surface display;
+
+        public void Render()
+        {
+
+        }
     }
 }
