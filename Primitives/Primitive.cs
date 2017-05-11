@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Primitive
+    public abstract class Primitive
     {
-        Vector3 position;
+        public Vector3 position;
+            public Primitive(Vector3 position)
+        {
+            this.position = position;
+        }
     }
 }
