@@ -9,7 +9,7 @@ namespace template
 {
     class Light
     {
-        Vector3 Origin;
+        Vector3 origin;
         Vector3 intensity;
         public Light()
         {
