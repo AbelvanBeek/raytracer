@@ -14,7 +14,8 @@ namespace Template
 	    //Init_ Initializes the program
 	    public void Init()
 	    {
-            rayTracer = new Raytracer(screen);
+            Constants.display = screen;
+            rayTracer = new Raytracer();
 	    }
 
 	    //Tick_ Renders one frame

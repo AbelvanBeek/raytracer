@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Constants;
 
 namespace template
 {
@@ -11,15 +12,15 @@ namespace template
     {
         Scene scene;
         Camera camera;
-        Template.Surface display;
-        Vector3 centerDebug;
+        static List<Primitive> primitives;
 
-        public Raytracer(Template.Surface screen)
+        public Raytracer()
         {
-            display = screen;
-            centerDebug = new Vector3(256, 50, 0);
+            scene = new Scene();
             camera = new Camera();
+            primitives = scene.primitives;
         }
+
         public void Render()
         {
             //de getransleerde locatie van de camera
@@ -30,17 +31,19 @@ namespace template
             for(int i =-1; i < 2; i++)
                 display.Line(camX -1, camY + i, camX + 1, camY + i, 0xff00ff);
             //breedte van het scherm/2
-            int screenX = (int) (camera.screenDistance * Math.Tanh(camera.fov/2));
+            int screenX = (int) (screenScale * camera.screenDistance * Math.Tanh(camera.fov/2));
             //scherm tekenen
             display.Line(camX - screenX, Ty((int)camera.screenDistance), camX + screenX, Ty((int)camera.screenDistance), 0xff0000);
+
+            DrawPrimitives();
         }
-        int Tx(int x)
+
+        void DrawPrimitives()
         {
-            return display.width/2 +1 + x + (int)centerDebug.X;
-        }
-        int Ty(int y)
-        {
-            return  display.height - (y + (int)centerDebug.Y);
+            foreach(Primitive p in primitives)
+            {
+                p.DrawPrimitive();
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Light
+    public class Light
     {
         Vector3 origin;
         Vector3 intensity;

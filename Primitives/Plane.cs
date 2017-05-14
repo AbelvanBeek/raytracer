@@ -12,7 +12,7 @@ namespace template
         //Not sure how to define a plane
         Vector3 normal;
         Vector3 distance;
-        public Plane(Vector3 normal, Vector3 distance, Vector3 position) :base(position)
+        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color) :base(position, color)
         {
             this.normal = normal;
             this.distance = distance;

@@ -9,24 +9,25 @@ namespace template
 {
     public class Scene
     {
-        List<Primitive> primitves = new List<Primitive>();
-        List<Light> lightSources = new List<Light>();
+        public List<Primitive> primitives = new List<Primitive>();
+        public List<Light> lightSources = new List<Light>();
 
         public Scene()
         {
+            for (int i = 0; i < 3; i++)
+            {
+                AddSphere(1.5f, new Vector3(-3.5f + 3.5f * i, 0, 8), new Vector3(1, 0, 0));
+            }
         }
-        void AddPlane()
+        void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color)
         {
-            Vector3 position = new Vector3(0, 0, 0);
-            Vector3 distance = new Vector3(10, 0, 10);
-            Vector3 normal = new Vector3(1, 0, 1);
-            Plane plane = new Plane(normal, distance, position);
+            Plane plane = new Plane(normal, distance, position, color);
+            primitives.Add(plane);
         }
-        void AddSphere()
+        void AddSphere(float radius, Vector3 position, Vector3 color)
         {
-            Vector3 position = new Vector3(0, 0, 0);
-            float radius = 1f;
-            Sphere sphere = new Sphere(radius, position);
+            Sphere sphere = new Sphere(radius, position, color);
+            primitives.Add(sphere);
         }
     }
 }

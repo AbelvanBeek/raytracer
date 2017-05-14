@@ -21,7 +21,7 @@ namespace template
             direction = new Vector3(0, 0, 1);
             fov = 90;
             screenCorners = new Vector3[4];
-            screenDistance = 50;
+            screenDistance = 1;
 
             //screen
             screenCorners[0] = new Vector3(0, 0, 400);
