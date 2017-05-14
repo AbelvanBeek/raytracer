@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using template;
+using static Constants;
 
 namespace Template
 {
@@ -21,7 +22,7 @@ namespace Template
 	    //Tick_ Renders one frame
 	    public void Tick()
 	    {
-            screen.Line(513, 0, 513, 513, 0xffffff);
+            screen.Line(screenWidth/2, 0, screenWidth/2, screenHeight, 0xffffff);
             rayTracer.Render();
         }
     }
