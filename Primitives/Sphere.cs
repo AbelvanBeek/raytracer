@@ -37,5 +37,15 @@ namespace template
         {
             return radius * (float)Math.Sin(angle) + position.Z;
         }
+        public override Intersection CalculateIntersection(Ray ray)
+        {
+            float rSq = radius * radius;
+            Vector3 c = this.position - ray.origin;
+            float t = Dot(c, ray.direction);
+            Vector3 q = c - t* ray.direction;
+            float p = Dot(q, q);
+            if (p > rSq) return null;
+            t -= (float)Math.Sqrt(rSq - p);            if ((t < ray.distance) && (t > 0)) ray.distance = t;            return new Intersection(ray.origin + ray.direction*ray.distance, t , this);
+        }
     }
 }
