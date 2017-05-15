@@ -11,6 +11,7 @@ internal static class Constants
     internal static int screenWidth = 1025;
     internal static int screenHeight = 512;
     internal static int screenScale = (int)(screenHeight / 10 / ((float)screenHeight/(float)(screenWidth/2)));
+    internal static float rayLength = 100f;
 
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
@@ -34,5 +35,9 @@ internal static class Constants
     internal static int Ty(float y)
     {
         return (int)(screenHeight - screenScale * (y + centerDebug.Y + 1));
+    }
+    internal static float Dot(Vector3 a, Vector3 b)
+    {
+        return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
     }
 }

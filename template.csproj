@@ -74,6 +74,7 @@
     <Compile Include="Light.cs" />
     <Compile Include="Primitives\Primitive.cs" />
     <Compile Include="Primitives\Plane.cs" />
+    <Compile Include="Ray.cs" />
     <Compile Include="Raytracer.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Primitives\Sphere.cs" />

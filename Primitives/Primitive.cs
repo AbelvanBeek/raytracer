@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Constants;
 
 namespace template
 {
@@ -19,5 +20,6 @@ namespace template
         }
 
         public virtual void DrawPrimitive() { }
+        public virtual Intersection CalculateIntersection(Ray ray) { return null; }
     }
 }

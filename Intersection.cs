@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Intersection
+    public class Intersection
     {
-        Vector3 intersection;
-        float distance;
-        Primitive nearestPrimitive;
+        public Vector3 intersection;
+        public float distance;
+        public Primitive nearestPrimitive;
+        public Intersection(Vector3 intersection, float distance,  Primitive nearestPrimitive)
+        {
+            this.distance = distance;
+            this.intersection = intersection;
+            this.nearestPrimitive = nearestPrimitive;
+        }
 
     }
 }
