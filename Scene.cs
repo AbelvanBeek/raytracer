@@ -14,9 +14,9 @@ namespace template
 
         public Scene()
         {
-                AddSphere(1.5f, new Vector3(-3.5f, 0, 3f), new Vector3(1, 0, 0));
-                AddSphere(1.5f, new Vector3(0, 0, 3f), new Vector3(0, 1, 0));
-                AddSphere(1.5f, new Vector3(3.5f, 0, 3f), new Vector3(0, 0, 1));
+                AddSphere(1.5f, new Vector3(-3.5f, 0f, 2f), new Vector3(1, 0, 0));
+                AddSphere(1.5f, new Vector3(0, 0f, 2f), new Vector3(0, 1, 0));
+                AddSphere(1.5f, new Vector3(3.5f, 0f, 2f), new Vector3(0, 0, 1));
         }
         void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color)
         {

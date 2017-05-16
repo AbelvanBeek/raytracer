@@ -13,6 +13,7 @@ namespace template
         Scene scene;
         Camera camera;
         static List<Primitive> primitives;
+        double counter;
         Vector3[] pixels = new Vector3[screenHeight * (screenWidth / 2)];
         
 
@@ -42,9 +43,10 @@ namespace template
             for(int i =-1; i < 2; i++)
                 display.Line(camX -1, camY + i, camX + 1, camY + i, 0xff00ff);
             //breedte van het scherm/2
-            int screenX = (int) (screenScale * camera.screenDistance * Math.Tan(camera.fov/2));
+            counter += 0.1d;
+            int screenX = (int) (camera.screenSize * screenScale);
             //scherm tekenen
-            display.Line(camX - screenX, Ty((int)camera.screenDistance), camX + screenX, Ty((int)camera.screenDistance), 0xff0000);
+            display.Line(camX - screenX, Ty((int)camera.screenDistance + camera.position.Z), camX + screenX, Ty((int)camera.screenDistance + camera.position.Z), 0xff0000);
 
             DrawPrimitives();
             foreach (Vector3 v in pixels)
@@ -62,14 +64,14 @@ namespace template
                 p.DrawPrimitive();
             }
         }
-        static Vector3 CalculateRay(Vector3 origin, Vector3 normal)
+        public Vector3 CalculateRay(Vector3 origin, Vector3 normal)
         {
             Ray ray = new Ray(origin, normal);
             return Trace(ray);
 
         }
 
-        static Vector3 Trace(Ray ray)
+        public Vector3 Trace(Ray ray)
         {
             Intersection i = IntersectScene(ray);
             if (i != null)

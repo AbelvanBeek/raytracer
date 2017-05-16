@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Constants;
 
 namespace template
 {
@@ -12,16 +13,18 @@ namespace template
         public Vector3 position;
         Vector3 direction;
         Vector3[] screenCorners;
-        public float fov;
+        public double radiansfov;
         public float screenDistance;
+        public float screenSize;
 
         public Camera()
         {
             position = new Vector3(0,0,0);
             direction = new Vector3(0, 0, 1);
-            fov = 90;
+            radiansfov =  90 * (Math.PI / 180);
             screenCorners = new Vector3[4];
-            screenDistance = 1;
+            screenSize = 1;//(screenWidth / 4 / screenScale);
+            screenDistance = screenSize / (float) Math.Tan(radiansfov/2);
 
             //screen
             screenCorners[0] = new Vector3(0, 0, 400);
