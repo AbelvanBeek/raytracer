@@ -45,7 +45,10 @@ namespace template
             Vector3 q = c - t* ray.direction;
             float p = Dot(q, q);
             if (p > rSq) return null;
-            t -= (float)Math.Sqrt(rSq - p);            if ((t < ray.distance) && (t > 0)) ray.distance = t;            return new Intersection(ray.origin + ray.direction*ray.distance, t , this);
+            t -= (float)Math.Sqrt(rSq - p);
+            if ((t < ray.distance) && (t > 0)) ray.distance = t;
+            return new Intersection(ray.origin + ray.direction*ray.distance, t , this);
+
         }
     }
 }
