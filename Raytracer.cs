@@ -75,7 +75,11 @@ namespace template
         {
             Intersection i = IntersectScene(ray);
             if (i != null)
+            {
+                //Draw every single ray with an intersection
+                display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(i.intersection.X), Ty(i.intersection.Z), CalculateHex(i.nearestPrimitive.color));
                 return i.nearestPrimitive.color;
+            }
             else
                 return new Vector3(0, 0, 0);
         }
