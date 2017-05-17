@@ -19,12 +19,12 @@ namespace template
 
         public Camera()
         {
-            position = new Vector3(0,0,0);
-            direction = new Vector3(0, 0, 1);
+            position = new Vector3(0, 0, 0);
+            direction = new Vector3(0, 0, 0);
             radiansfov =  90 * (Math.PI / 180);
             screenCorners = new Vector3[4];
-            screenSize = 1;//(screenWidth / 4 / screenScale);
-            screenDistance = screenSize / (float) Math.Tan(radiansfov/2);
+            screenSize = (screenWidth  / screenScale / (axisLength*2));
+            screenDistance = (screenSize/2) / (float) Math.Tan(radiansfov/2);
 
             //screen
             screenCorners[0] = new Vector3(0, 0, 400);

@@ -23,11 +23,11 @@ namespace template
             camera = new Camera();
             primitives = scene.primitives;
             int i = 0;
-            for(int x = -256; x < 256; x++)
+            for(float x = -256; x < 256; x++)
             {
-                for (int y = -256; y < 256; y++)
+                for (float y = -256; y < 256; y++)
                 {
-                    pixels[i] = new Vector3(x, camera.screenDistance * screenScale, y);
+                    pixels[i] = new Vector3(x / screenScale /axisLength, y / screenScale /axisLength, camera.screenDistance);
                     i++;
                 }
             }
@@ -44,7 +44,7 @@ namespace template
                 display.Line(camX -1, camY + i, camX + 1, camY + i, 0xff00ff);
             //breedte van het scherm/2
             counter += 0.1d;
-            int screenX = (int) (camera.screenSize * screenScale);
+            int screenX = (int) (camera.screenSize/2 * screenScale);
             //scherm tekenen
             display.Line(camX - screenX, Ty((int)camera.screenDistance + camera.position.Z), camX + screenX, Ty((int)camera.screenDistance + camera.position.Z), 0xff0000);
 
@@ -53,7 +53,7 @@ namespace template
             {
                 Vector3 n = v - camera.position;
                 n.Normalize();
-                display.Pixel((int)v.X + 256, (int)v.Z + 256, CalculateHex(CalculateRay(camera.position, n)));
+                display.Pixel((int)(v.X * screenScale * axisLength) + 256, (int)(v.Y *screenScale * axisLength)+ 256, CalculateHex(CalculateRay(camera.position, n)));
             }
         }
 
