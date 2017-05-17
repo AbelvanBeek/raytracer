@@ -77,7 +77,8 @@ namespace template
             if (i != null)
             {
                 //Draw every single ray with an intersection
-                display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(i.intersection.X), Ty(i.intersection.Z), CalculateHex(i.nearestPrimitive.color));
+                if (ray.direction.Y == 0)
+                    display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(i.intersection.X), Ty(i.intersection.Z), CalculateHex(i.nearestPrimitive.color));
                 return i.nearestPrimitive.color;
             }
             else
