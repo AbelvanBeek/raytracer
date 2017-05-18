@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,22 +23,24 @@ namespace template
             scene = new Scene();
             camera = new Camera();
             primitives = scene.primitives;
-            int i = 0;
-            for(float x = -256; x < 256; x++)
-            {
-                for (float y = -256; y < 256; y++)
-                {
-                    pixels[i] = new Vector3(x / screenScale /axisLength, y / screenScale /axisLength, camera.screenDistance);
-                    i++;
-                }
-            }
         }
 
         public void Render()
         {
+            display.Clear(0x000000);
+            camera.HandleInput();
+            int j = 0;
+            for (float x = -256; x < 256; x++)
+            {
+                for (float y = -256; y < 256; y++)
+                {
+                    pixels[j] = new Vector3(x / screenScale / axisLength + camera.position.X, y / screenScale / axisLength + camera.position.Y, camera.screenDistance + camera.position.Z);
+                    j++;
+                }
+            }
             //de getransleerde locatie van de camera
-            int camX = Tx((int)camera.position.X);
-            int camY = Ty((int)camera.position.Z);
+            int camX = Tx(camera.position.X);
+            int camY = Ty(camera.position.Z);
             
             //camera tekenen
             for(int i =-1; i < 2; i++)
@@ -45,16 +48,17 @@ namespace template
             //breedte van het scherm/2
             counter += 0.1d;
             int screenX = (int) (camera.screenSize/2 * screenScale);
-            //scherm tekenen
-            display.Line(camX - screenX, Ty((int)camera.screenDistance + camera.position.Z), camX + screenX, Ty((int)camera.screenDistance + camera.position.Z), 0xff0000);
-
             DrawPrimitives();
             foreach (Vector3 v in pixels)
             {
                 Vector3 n = v - camera.position;
                 n.Normalize();
-                display.Pixel((int)(v.X * screenScale * axisLength) + 256, (int)(v.Y *screenScale * axisLength)+ 256, CalculateHex(CalculateRay(camera.position, n, v)));
+                display.Pixel((int)(((v.X - camera.position.X) * screenScale * axisLength)) + 256, (int)((v.Y - camera.position.Y)  * screenScale * axisLength) + 256, CalculateHex(CalculateRay(camera.position, n, v)));
             }
+
+            //scherm tekenen
+            display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0xffffff);
+
         }
 
         void DrawPrimitives()
@@ -78,13 +82,13 @@ namespace template
             if (i != null)
             {
                 //Draw every single ray with an intersection
-                if (ray.direction.Y == 0 && pixel.X * 256 % 10 == 0)
+                if (ray.direction.Y == 0)
                     display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(i.intersection.X), Ty(i.intersection.Z), CalculateHex(i.nearestPrimitive.color));
             
                 return i.nearestPrimitive.color;
             }
             else
-                if(ray.direction.Y == 0 && pixel.X * 256 % 10 == 0)
+                if(ray.direction.Y == 0)
                     display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(ray.origin.X + ray.direction.X * 100), Ty(ray.origin.Z + ray.direction.Z * 100f), 0xffffff);
                 return new Vector3(0, 0, 0);
         }
