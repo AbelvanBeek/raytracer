@@ -53,7 +53,7 @@ namespace template
             {
                 Vector3 n = v - camera.position;
                 n.Normalize();
-                display.Pixel((int)(((v.X - camera.position.X) * screenScale * axisLength)) + 256, (int)((v.Y - camera.position.Y)  * screenScale * axisLength) + 256, CalculateHex(CalculateRay(camera.position, n)));
+                display.Pixel((int)(((v.X - camera.position.X) * screenScale * axisLength)) + 256, (int)((v.Y - camera.position.Y)  * screenScale * axisLength) + 256, CalculateHex(CalculateRay(camera.position, n, v)));
             }
 
             //scherm tekenen
@@ -68,24 +68,28 @@ namespace template
                 p.DrawPrimitive();
             }
         }
-        public Vector3 CalculateRay(Vector3 origin, Vector3 normal)
+        public Vector3 CalculateRay(Vector3 origin, Vector3 normal, Vector3 pixel)
         {
             Ray ray = new Ray(origin, normal);
-            return Trace(ray);
+            return Trace(ray, pixel);
 
         }
 
-        public Vector3 Trace(Ray ray)
+        public Vector3 Trace(Ray ray, Vector3 pixel)
         {
             Intersection i = IntersectScene(ray);
+
             if (i != null)
             {
                 //Draw every single ray with an intersection
                 if (ray.direction.Y == 0)
                     display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(i.intersection.X), Ty(i.intersection.Z), CalculateHex(i.nearestPrimitive.color));
+            
                 return i.nearestPrimitive.color;
             }
             else
+                if(ray.direction.Y == 0)
+                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(ray.origin.X + ray.direction.X * 100), Ty(ray.origin.Z + ray.direction.Z * 100f), 0xffffff);
                 return new Vector3(0, 0, 0);
         }
         static Intersection IntersectScene(Ray ray)
