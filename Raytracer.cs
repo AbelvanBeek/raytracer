@@ -15,8 +15,8 @@ namespace template
         Camera camera;
         static List<Primitive> primitives;
         double counter;
-        Vector3[] pixels = new Vector3[screenHeight * (screenWidth / 2)];
-        
+        float scale = 1f / 256f;
+
 
         public Raytracer()
         {
@@ -29,15 +29,7 @@ namespace template
         {
             display.Clear(0x000000);
             camera.HandleInput();
-            int j = 0;
-            for (float x = -256; x < 256; x++)
-            {
-                for (float y = -256; y < 256; y++)
-                {
-                    pixels[j] = new Vector3(x / screenScale / axisLength + camera.position.X, y / screenScale / axisLength + camera.position.Y, camera.screenDistance + camera.position.Z);
-                    j++;
-                }
-            }
+
             //de getransleerde locatie van de camera
             int camX = Tx(camera.position.X);
             int camY = Ty(camera.position.Z);
@@ -49,15 +41,20 @@ namespace template
             counter += 0.1d;
             int screenX = (int) (camera.screenSize/2 * screenScale);
             DrawPrimitives();
-            foreach (Vector3 v in pixels)
+
+            //trace the rays.
+            for (int x = -256; x < 256; x++)
             {
-                Vector3 n = v - camera.position;
-                n.Normalize();
-                display.Pixel((int)(((v.X - camera.position.X) * screenScale * axisLength)) + 256, (int)((v.Y - camera.position.Y)  * screenScale * axisLength) + 256, CalculateHex(CalculateRay(camera.position, n, v)));
+                for (int y = -256; y < 256; y++)
+                {
+                    Vector3 n = (x*0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y*0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + camera.direction;
+                    n.Normalize();
+                    display.Pixel(x + 256, y + 256, CalculateHex(CalculateRay(camera.position, n)));
+                }
             }
 
             //scherm tekenen
-            display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0xffffff);
+            display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0x0000ff);
 
         }
 
@@ -68,14 +65,14 @@ namespace template
                 p.DrawPrimitive();
             }
         }
-        public Vector3 CalculateRay(Vector3 origin, Vector3 normal, Vector3 pixel)
+        public Vector3 CalculateRay(Vector3 origin, Vector3 normal)
         {
             Ray ray = new Ray(origin, normal);
-            return Trace(ray, pixel);
+            return Trace(ray);
 
         }
 
-        public Vector3 Trace(Ray ray, Vector3 pixel)
+        public Vector3 Trace(Ray ray)
         {
             Intersection i = IntersectScene(ray);
 
