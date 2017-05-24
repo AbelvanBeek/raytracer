@@ -50,7 +50,12 @@ namespace template
             if ((t < ray.distance) && (t > 0))
                 ray.distance = t;
             return new Intersection(ray.origin + ray.direction*ray.distance, t , this);
-
+        }
+        public override Vector3 Normal(Vector3 intersection)
+        {
+            Vector3 n = (intersection - position);
+            n.Normalize();
+            return n;
         }
 
     }

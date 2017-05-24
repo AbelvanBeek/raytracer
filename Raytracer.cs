@@ -105,13 +105,14 @@ namespace template
                     {
                         if (ray.direction.Y == 0)
                         DrawDebug(temp, i);
-                        Vector3 test = DirectIllumination(i.intersection, i.intersection - i.nearestPrimitive.position, light) * i.nearestPrimitive.color;
+                        Vector3 test = DirectIllumination(i.intersection, i.nearestPrimitive.Normal(i.intersection), light) * i.nearestPrimitive.color;
                         return test;
                     }
                     else
                         return new Vector3(0, 0, 0);
 
                 }
+                //return i.nearestPrimitive.color;
             }
             return new Vector3(0, 0, 0);
         }
