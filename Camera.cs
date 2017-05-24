@@ -22,15 +22,11 @@ namespace template
         {
             position = new Vector3(0, 0, 0);
             direction = new Vector3(0, 0, 1);
-            screenSize = (screenWidth  / screenScale / (axisLength*2));
+            screenSize = 2;
             screenDistance = 1;
             screenCorners = new Vector3[4];
 
-            //screen
-            screenCorners[0] = new Vector3(-1, 1, 0);
-            screenCorners[1] = new Vector3(1, 1, 0);
-            screenCorners[2] = new Vector3(-1, -1, 0);
-            screenCorners[3] = new Vector3(1, -1, 0);
+            UpdateScreen();
 
         }
         public void HandleInput()
@@ -48,6 +44,18 @@ namespace template
                 position.Z += 0.05f;
             if (k.IsKeyDown(Key.X))
                 position.Z -= 0.05f;
+            if (k.IsKeyDown(Key.C))
+                screenDistance += 0.05f; UpdateScreen();
+            if (k.IsKeyDown(Key.V))
+                screenDistance -= 0.05f; UpdateScreen();
+        }
+        public void UpdateScreen()
+        {
+            //screen
+            screenCorners[0] = new Vector3(-1, 1, screenDistance);
+            screenCorners[1] = new Vector3(1, 1, screenDistance);
+            screenCorners[2] = new Vector3(-1, -1, screenDistance);
+            screenCorners[3] = new Vector3(1, -1, screenDistance);
         }
     }
 }

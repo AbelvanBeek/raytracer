@@ -20,9 +20,9 @@ internal static class Constants
 
     internal static int CalculateHex(Vector3 color)
     {
-        int hexcolor;
-        hexcolor = (int)(color.X * 255 * 256 * 256);
-        hexcolor += (int)(color.Y * 255 * 256);
+        int hexcolor = 0;
+        hexcolor += (int)(color.X * 255) << 16;
+        hexcolor += (int)(color.Y * 255) << 8;
         hexcolor += (int)(color.Z * 255);
 
         return hexcolor;
