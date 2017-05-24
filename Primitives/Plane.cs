@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using static Constants;
 namespace template
 {
     class Plane : Primitive
@@ -16,6 +16,17 @@ namespace template
         {
             this.normal = normal;
             this.distance = distance;
+        }
+        public override Intersection CalculateIntersection(Ray ray)
+        {
+            float d = 8f;
+            float t = -(Dot(normal, ray.origin) + d) / (Dot(normal, ray.direction));
+            Vector3 intersection = ray.origin + t * ray.direction;
+            return new Intersection(intersection, Length(intersection), this);
+        }
+        public override Vector3 Normal(Vector3 intersection)
+        {
+            return normal;
         }
     }
 }
