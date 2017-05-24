@@ -17,6 +17,7 @@ namespace template
                 AddSphere(1.5f, new Vector3(-3.5f, 0f, 7.5f), new Vector3(1, 0, 0));
                 AddSphere(1.5f, new Vector3(0, 0f, 7.5f), new Vector3(0, 1, 0));
                 AddSphere(1.5f, new Vector3(3.5f, 0f, 7.5f), new Vector3(0, 0, 1));
+                AddLight(new Vector3(-2, 0, 0), new Vector3(1,1,1));
         }
         void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color)
         {
@@ -27,6 +28,11 @@ namespace template
         {
             Sphere sphere = new Sphere(radius, position, color);
             primitives.Add(sphere);
+        }
+        void AddLight(Vector3 origin, Vector3 intensity)
+        {
+            Light light = new Light(origin, intensity);
+            lightSources.Add(light);
         }
     }
 }

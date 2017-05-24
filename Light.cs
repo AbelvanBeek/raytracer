@@ -5,15 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace template
+public class Light
 {
-    public class Light
+    public Vector3 origin;
+    public Vector3 intensity;
+    public Light(Vector3 origin, Vector3 intensity)
     {
-        Vector3 origin;
-        Vector3 intensity;
-        public Light()
-        {
-            intensity = new Vector3(1f, 1f, 1f);
-        }
+        this.origin = origin;
+        this.intensity = intensity;
     }
 }

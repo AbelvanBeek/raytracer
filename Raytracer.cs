@@ -14,6 +14,7 @@ namespace template
         Scene scene;
         Camera camera;
         static List<Primitive> primitives;
+        static List<Light> lightSources;
         double counter;
         float scale = 1f / 256f;
         public bool debug2D = true;
@@ -26,6 +27,7 @@ namespace template
             scene = new Scene();
             camera = new Camera();
             primitives = scene.primitives;
+            lightSources = scene.lightSources;
         }
 
         public void Render()
@@ -90,23 +92,39 @@ namespace template
 
             if (i != null)
             {
-                return i.nearestPrimitive.color;
+                //Shadow rays
+                foreach (Light light in lightSources)
+                {
+                    Vector3 iets = (i.intersection - light.origin);
+                    Vector3 dir = iets;
+                    dir.Normalize();
+                    ray.distance = Length(iets);
+                    Ray temp = new Ray(light.origin + E*dir, dir);
+                    //ray.origin = new Vector3(-2, 0, 0);
+                    if (IntersectScene(temp) == null)
+                    {
+                        DrawDebug(temp, null);
+                        return i.nearestPrimitive.color;
+                    }
+                    else
+                        return new Vector3(0, 0, 0);
+
+                }
             }
-            else
-                return new Vector3(0, 0, 0);
+            return new Vector3(0, 0, 0);
         }
 
         public void DrawDebug(Ray ray, Intersection x)
         {
                 if (x != null)
-                    display.Line(Tx(camera.position.X), Ty(camera.position.Z), Tx(x.intersection.X), Ty(x.intersection.Z), 0xffff00);
+                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(x.intersection.X), Ty(x.intersection.Z), 0xffff00);
                 else
-                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(ray.origin.X + ray.direction.X * 100), Ty(ray.origin.Z + ray.direction.Z * 100f), 0xffff00);
+                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(ray.origin.X + ray.direction.X * ray.distance), Ty(ray.origin.Z + ray.direction.Z * ray.distance), 0xffff00);
         }
 
         static Intersection IntersectScene(Ray ray)
         {
-            float x = rayLength;
+            float x = ray.distance;
             Intersection k = null;
             foreach (Primitive p in primitives)
             {
