@@ -13,7 +13,7 @@ internal static class Constants
     internal static int axisLength = 5;
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
     internal static float rayLength = 100f;
-    internal static float E = 0.1f;
+    internal static float E = 0.001f;
 
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
@@ -22,9 +22,9 @@ internal static class Constants
     internal static int CalculateHex(Vector3 color)
     {
         int hexcolor = 0;
-        hexcolor += (int)(color.X * 255) << 16;
-        hexcolor += (int)(color.Y * 255) << 8;
-        hexcolor += (int)(color.Z * 255);
+        hexcolor += (int) MathHelper.Clamp(color.X * 255, 0, 255) << 16;
+        hexcolor += (int) MathHelper.Clamp(color.Y * 255, 0, 255) << 8;
+        hexcolor += (int) MathHelper.Clamp(color.Z * 255, 0, 255);
 
         return hexcolor;
     }

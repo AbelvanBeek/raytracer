@@ -98,13 +98,15 @@ namespace template
                     Vector3 iets = (i.intersection - light.origin);
                     Vector3 dir = iets;
                     dir.Normalize();
-                    ray.distance = Length(iets);
                     Ray temp = new Ray(light.origin + E*dir, dir);
+                    temp.distance = Length(iets) - 2 * E;
                     //ray.origin = new Vector3(-2, 0, 0);
                     if (IntersectScene(temp) == null)
                     {
-                        DrawDebug(temp, null);
-                        return i.nearestPrimitive.color;
+                        if (ray.direction.Y == 0)
+                        DrawDebug(temp, i);
+                        Vector3 test = DirectIllumination(i.intersection, i.intersection - i.nearestPrimitive.position, light) * i.nearestPrimitive.color;
+                        return test;
                     }
                     else
                         return new Vector3(0, 0, 0);
@@ -112,6 +114,16 @@ namespace template
                 }
             }
             return new Vector3(0, 0, 0);
+        }
+
+        Vector3 DirectIllumination(Vector3 intersection, Vector3 normal, Light light)
+        {
+            Vector3 L = light.origin - intersection;
+            float dist = Length(L);
+            normal.Normalize();
+            L *= (1.0f / dist);
+            float attenuation = 1 / (dist * dist);
+            return (light.intensity * Dot(normal, L) * attenuation);
         }
 
         public void DrawDebug(Ray ray, Intersection x)
@@ -129,7 +141,7 @@ namespace template
             foreach (Primitive p in primitives)
             {
                 Intersection i = p.CalculateIntersection(ray);
-                if (i != null &&i.distance < x)
+                if (i != null && i.distance < x)
                 {
                     x = i.distance;
                     k = i;
