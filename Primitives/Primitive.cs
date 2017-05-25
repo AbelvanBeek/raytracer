@@ -12,11 +12,13 @@ namespace template
     {
         public Vector3 position;
         public Vector3 color;
+        public float reflectiveness;
 
-        public Primitive(Vector3 position, Vector3 color)
+        public Primitive(Vector3 position, Vector3 color, float reflectiveness)
         {
             this.position = position;
             this.color = color;
+            this.reflectiveness = reflectiveness;
         }
 
         public virtual void DrawPrimitive() { }

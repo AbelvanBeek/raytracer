@@ -9,18 +9,22 @@ namespace template
 {
     class Plane : Primitive
     {
-        //Not sure how to define a plane
         Vector3 normal;
         Vector3 distance;
-        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color) :base(position, color)
+        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness) :base(position, color, reflectiveness)
         {
             this.normal = normal;
             this.distance = distance;
         }
         public override Intersection CalculateIntersection(Ray ray)
         {
-            float d = 8f;
-            float t = -(Dot(normal, ray.origin) + d) / (Dot(normal, ray.direction));
+            //float d = Dot(normal, position);
+            //float t = -(Dot(normal, ray.origin) + d) / (Dot(normal, ray.direction));
+
+            float t = (ray.origin.Y - position.Y) / ray.direction.Y;
+
+            if (t > 0) return null;
+
             Vector3 intersection = ray.origin + t * ray.direction;
             return new Intersection(intersection, Length(intersection), this);
         }
