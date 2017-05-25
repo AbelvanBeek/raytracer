@@ -103,9 +103,32 @@ namespace template
                     //ray.origin = new Vector3(-2, 0, 0);
                     if (IntersectScene(temp) == null)
                     {
+                        Vector3 test = new Vector3(0, 0, 0);
+
                         if (ray.direction.Y == 0)
-                        DrawDebug(temp, i);
-                        Vector3 test = DirectIllumination(i.intersection, i.nearestPrimitive.Normal(i.intersection), light) * i.nearestPrimitive.color;
+                            DrawDebug(temp, i);
+                        if (i.nearestPrimitive.reflectiveness != 1f)
+                        {
+                            test += (1 - i.nearestPrimitive.reflectiveness) * DirectIllumination(i.intersection, i.nearestPrimitive.Normal(i.intersection), light) * i.nearestPrimitive.color;
+                        }
+                        if (i.nearestPrimitive.reflectiveness != 0f)
+                        {
+                            Vector3 refDir = ray.direction - 2 * i.nearestPrimitive.Normal(i.intersection) * Dot(ray.direction, i.nearestPrimitive.Normal(i.intersection));
+                            Ray refRay = new Ray(i.intersection + i.nearestPrimitive.Normal(i.intersection) * E, refDir);
+                            Intersection j = IntersectScene(refRay);
+                            if (j != null)
+                            {
+                                test += i.nearestPrimitive.reflectiveness * j.nearestPrimitive.color;
+                                if (refRay.direction.Y == 0)
+                                {
+                                    DrawDebug(refRay, j);
+                                }
+                            }
+
+                            else
+                                return new Vector3(0, 0, 0);
+                        }
+
                         return test;
                     }
                     else
