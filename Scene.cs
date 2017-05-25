@@ -14,7 +14,7 @@ namespace template
 
         public Scene()
         {
-                AddPlane(new Vector3(0, 0, 0), new Vector3(1, 1, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 1));
+                AddPlane(new Vector3(-1, -1, 1), new Vector3(1, 1, 1), new Vector3(1, 1, 0), new Vector3(1, 0, 1));
                 AddSphere(1.5f, new Vector3(-3.5f, 0f, 7.5f), new Vector3(1, 0, 0));
                 AddSphere(1.5f, new Vector3(0, 0f, 7.5f), new Vector3(0, 1, 0));
                 AddSphere(1.5f, new Vector3(3.5f, 0f, 7.5f), new Vector3(0, 0, 1));

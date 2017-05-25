@@ -19,7 +19,7 @@ namespace template
         }
         public override Intersection CalculateIntersection(Ray ray)
         {
-            float d = 8f;
+            float d = -10;
             float t = -(Dot(normal, ray.origin) + d) / (Dot(normal, ray.direction));
             Vector3 intersection = ray.origin + t * ray.direction;
             return new Intersection(intersection, Length(intersection), this);
