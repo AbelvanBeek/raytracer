@@ -113,8 +113,9 @@ namespace template
                         }
                         if (i.nearestPrimitive.reflectiveness != 0f)
                         {
-                            Vector3 refDir = ray.direction - 2 * i.nearestPrimitive.Normal(i.intersection) * Dot(ray.direction, i.nearestPrimitive.Normal(i.intersection));
-                            Ray refRay = new Ray(i.intersection + i.nearestPrimitive.Normal(i.intersection) * E, refDir);
+                            Vector3 refDir = -(ray.direction - ((2 * i.nearestPrimitive.Normal(i.intersection)) * Dot(ray.direction, i.nearestPrimitive.Normal(i.intersection))));
+                            Ray refRay = new Ray(i.intersection + refDir *E, refDir);
+                            refRay.distance = ray.distance;
                             Intersection j = IntersectScene(refRay);
                             if (j != null)
                             {
