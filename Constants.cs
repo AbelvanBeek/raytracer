@@ -15,6 +15,8 @@ internal static class Constants
     internal static float rayLength = 100f;
     internal static float E = 0.001f;
 
+    internal static Vector3 camRotation = new Vector3(0, 0, 0);
+
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
     internal static Template.Surface display;

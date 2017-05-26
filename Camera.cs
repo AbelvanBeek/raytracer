@@ -14,13 +14,12 @@ namespace template
         public Vector3 position;
         public Vector3 direction;
         public Vector3[] screenCorners;
-        public double radiansfov;
         public float screenDistance;
         public float screenSize;
 
         public Camera()
         {
-            position = new Vector3(0, 0, 0);
+            position = new Vector3(0, -1f, 0);
             direction = new Vector3(0, 0, 1);
             screenSize = 2;
             screenDistance = 1;
@@ -48,7 +47,16 @@ namespace template
                 screenDistance += 0.05f; UpdateScreen();
             if (k.IsKeyDown(Key.V))
                 screenDistance -= 0.05f; UpdateScreen();
+            if (k.IsKeyDown(Key.W))
+                camRotation.Y += 0.2f; UpdateScreen();
+            if (k.IsKeyDown(Key.A))
+                camRotation.X -= 0.2f; UpdateScreen();
+            if (k.IsKeyDown(Key.S))
+                camRotation.Y -= 0.2f; UpdateScreen();
+            if (k.IsKeyDown(Key.D))
+                camRotation.X += 0.2f; UpdateScreen();
         }
+
         public void UpdateScreen()
         {
             //screen

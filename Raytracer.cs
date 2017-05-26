@@ -42,7 +42,8 @@ namespace template
                 {
                     //the boolean debug determines wether the ray will be drawn in the debug window.
                     debug = (debug2D && y == 0 && x % 10 == 0);
-                    Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance) ;
+                    Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
+                    n += camRotation;
                     n.Normalize();
                     Ray ray = new Ray(camera.position, n);
 
@@ -97,11 +98,15 @@ namespace template
                 DrawDebug(ray.origin, intersect.intersection, new Vector3(1, 1, 1));
 
             //if the primitive is a mirror
-            if (intersect.nearestPrimitive.reflectiveness == 1)
+            if (intersect.nearestPrimitive.reflectiveness == 1f)
             {
                 return Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection)));
             }
-            //if the primitive is not a mirror
+            else if (intersect.nearestPrimitive.reflectiveness != 0f)
+            {
+                return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection))) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
+            }
+            //if the primitive is not reflective
             else
             {
                 //directIllumination casts a shadow ray.
@@ -149,6 +154,7 @@ namespace template
                     k = i;
                 }
             }
+
             return k;
         }
 
