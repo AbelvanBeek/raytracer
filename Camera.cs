@@ -52,10 +52,10 @@ namespace template
         public void UpdateScreen()
         {
             //screen
-            screenCorners[0] = new Vector3(-1, 1, screenDistance);
-            screenCorners[1] = new Vector3(1, 1, screenDistance);
-            screenCorners[2] = new Vector3(-1, -1, screenDistance);
-            screenCorners[3] = new Vector3(1, -1, screenDistance);
+            screenCorners[0] = new Vector3(-1, 1, screenDistance); // top left
+            screenCorners[1] = new Vector3(1, 1, screenDistance); // top right
+            screenCorners[2] = new Vector3(-1, -1, screenDistance); // bottom right
+            screenCorners[3] = new Vector3(1, -1, screenDistance); // bottom left
         }
     }
 }

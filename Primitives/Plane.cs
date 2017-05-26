@@ -18,14 +18,16 @@ namespace template
         }
         public override Intersection CalculateIntersection(Ray ray)
         {
-            //float d = Dot(normal, position);
-            //float t = -(Dot(normal, ray.origin) + d) / (Dot(normal, ray.direction));
-
-            float t = (ray.origin.Y - position.Y) / ray.direction.Y;
-
-            if (t > 0) return null;
-
-            Vector3 intersection = ray.origin + t * ray.direction;
+            Vector3 intersection;
+            float t = (Dot(ray.origin - position, normal) / Dot(ray.direction, normal));
+            
+            if(t > 0)
+                return null;
+            intersection = ray.origin + t * ray.direction;
+            /* Z lijkt omgedraaid te zijn vor planes, zonder deze code zie je de plane wel, met zie je hem niet. (z is dus kleiner dan -1
+            if (intersection.Z < -1)
+                return null;
+                */
             return new Intersection(intersection, Length(intersection), this);
         }
         public override Vector3 Normal(Vector3 intersection)
