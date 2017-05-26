@@ -19,7 +19,7 @@ namespace template
         float scale = 1f / 256f;
         public bool debug2D = true;
         public Vector3[] rays2D;
-
+        public bool debug;
 
         public Raytracer()
         {
@@ -32,24 +32,30 @@ namespace template
 
         public void Render()
         {
-            display.Clear(0x000000);
+            display.Clear(0x00000);
             camera.HandleInput();
-
-            //de getransleerde locatie van de camera
-            int camX = Tx(camera.position.X);
-            int camY = Ty(camera.position.Z);
 
             //trace the rays.
             for (int x = -256; x < 256; x++)
             {
                 for (int y = -256; y < 256; y++)
                 {
-                    display.Pixel(x + 256, y + 256, CalculateHex(Trace(x, y)));
+                    //the boolean debug determines wether the ray will be drawn in the debug window.
+                    debug = (debug2D && y == 0 && x % 10 == 0);
+                    Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance) ;
+                    n.Normalize();
+                    Ray ray = new Ray(camera.position, n);
+
+                    //trace the primary ray
+                    display.Pixel(x + 256, y + 256, CalculateHex(Trace(ray)));
                 }
             }
 
             if (debug2D)
             {
+                //de getransleerde locatie van de camera
+                int camX = Tx(camera.position.X);
+                int camY = Ty(camera.position.Z);
                 //camera tekenen
                 for (int i = -1; i < 2; i++)
                     display.Line(camX - 1, camY + i, camX + 1, camY + i, 0xff00ff);
@@ -57,7 +63,6 @@ namespace template
                 counter += 0.1d;
                 int screenX = (int)(camera.screenSize / 2 * screenScale);
                 DrawPrimitives();
-
                 //scherm tekenen
                 display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0x0000ff);
             }
@@ -65,101 +70,73 @@ namespace template
 
         void DrawPrimitives()
         {
+            //draws the 2 primitives
             foreach(Primitive p in primitives)
             {
                 p.DrawPrimitive();
             }
         }
 
-        public Vector3 Trace( int x, int y)
+        Vector3 Trace(Ray ray)
         {
-            Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
-            n.Normalize();
-            Ray ray = new Ray(camera.position, n);
+            //make sure the recursion doesnt go on endlessly
+            if (ray.recursionDepth <= 0)
+                return new Vector3(0, 0, 0);
+            ray.recursionDepth--;
 
-            Intersection i = IntersectScene(ray);
-            if (debug2D)
+            Intersection intersect = IntersectScene(ray);
+            if (intersect == null)
             {
-                if (y == 0 && x % 10 == 0)
-                {
-                    DrawDebug(ray, i);
-                }
+                //draw the debug line without intersectionpoint
+                if (debug)
+                    DrawDebug(ray.origin, ray.origin + ray.direction * ray.distance, new Vector3(1, 1, 1));
+                return new Vector3(0, 0, 0);
             }
+            //debug for when there is an intersection
+            if (debug)
+                DrawDebug(ray.origin, intersect.intersection, new Vector3(1, 1, 1));
+
+            //if the primitive is a mirror
+            if (intersect.nearestPrimitive.reflectiveness == 1)
+            {
+                return Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection)));
+            }
+            //if the primitive is not a mirror
             else
             {
-                display.Pixel(512 + 256 + x, 256 + y, CalculateHex(new Vector3(1,1,1) * ( 10- ray.distance/10)));
+                //directIllumination casts a shadow ray.
+                //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
+                return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
+        }
 
-            if (i != null)
+
+        Vector3 DirectIllumination(Vector3 intersection, Vector3 normal)
+        {
+            Vector3 lighting = new Vector3(0,0,0);
+            foreach (Light light in lightSources)
             {
-                //Shadow rays
-                foreach (Light light in lightSources)
-                {
-                    Vector3 iets = (i.intersection - light.origin);
-                    Vector3 dir = iets;
-                    dir.Normalize();
-                    Ray temp = new Ray(light.origin + E*dir, dir);
-                    temp.distance = Length(iets) - 2 * E;
-                    //ray.origin = new Vector3(-2, 0, 0);
-                    if (IntersectScene(temp) == null)
-                    {
-                        Vector3 test = new Vector3(0, 0, 0);
+                Vector3 L = light.origin - intersection;
+                float dist = Length(L);
+                normal.Normalize();
+                L *= (1.0f / dist);
 
-                        if (ray.direction.Y == 0)
-                            DrawDebug(temp, i);
-                        if (i.nearestPrimitive.reflectiveness != 1f)
-                        {
-                            test += (1 - i.nearestPrimitive.reflectiveness) * DirectIllumination(i.intersection, i.nearestPrimitive.Normal(i.intersection), light) * i.nearestPrimitive.color;
-                        }
-                        if (i.nearestPrimitive.reflectiveness != 0f)
-                        {
-                            Vector3 refDir = -(ray.direction - ((2 * i.nearestPrimitive.Normal(i.intersection)) * Dot(ray.direction, i.nearestPrimitive.Normal(i.intersection))));
-                            Ray refRay = new Ray(i.intersection + refDir *E, refDir);
-                            refRay.distance = ray.distance;
-                            Intersection j = IntersectScene(refRay);
-                            if (j != null)
-                            {
-                                test += i.nearestPrimitive.reflectiveness * j.nearestPrimitive.color;
-                                if (refRay.direction.Y == 0)
-                                {
-                                    DrawDebug(refRay, j);
-                                }
-                            }
+                //test whether there is an object between the lightsource and the intersection point
+                if (!IsVisible(light.origin, L, dist))
+                    return new Vector3(0, 0, 0);
 
-                            else
-                                return new Vector3(0, 0, 0);
-                        }
-
-                        return test;
-                    }
-                    else
-                        return new Vector3(0, 0, 0);
-
-                }
-                //return i.nearestPrimitive.color;
+                float attenuation = 1 / (dist * dist);
+                lighting = (light.intensity * Dot(normal, L) * attenuation);
             }
-            return new Vector3(0, 0, 0);
+            return lighting;
         }
 
-        Vector3 DirectIllumination(Vector3 intersection, Vector3 normal, Light light)
+        public void DrawDebug(Vector3 rayOrigin, Vector3 x, Vector3 color)
         {
-            Vector3 L = light.origin - intersection;
-            float dist = Length(L);
-            normal.Normalize();
-            L *= (1.0f / dist);
-            float attenuation = 1 / (dist * dist);
-            return (light.intensity * Dot(normal, L) * attenuation);
+                    display.Line(Tx(rayOrigin.X), Ty(rayOrigin.Z), Tx(x.X), Ty(x.Z), CalculateHex(color));
         }
 
-        public void DrawDebug(Ray ray, Intersection x)
-        {
-                if (x != null)
-                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(x.intersection.X), Ty(x.intersection.Z), 0xffff00);
-                else
-                    display.Line(Tx(ray.origin.X), Ty(ray.origin.Z), Tx(ray.origin.X + ray.direction.X * ray.distance), Ty(ray.origin.Z + ray.direction.Z * ray.distance), 0xffff00);
-        }
-
-        static Intersection IntersectScene(Ray ray)
+        public Intersection IntersectScene(Ray ray)
         {
             float x = ray.distance;
             Intersection k = null;
@@ -173,6 +150,19 @@ namespace template
                 }
             }
             return k;
+        }
+
+        public bool IsVisible(Vector3 lightPos, Vector3 LightDir, float dist)
+        {
+            Ray ray = new Ray(lightPos, LightDir);
+            Intersection i = IntersectScene(ray);
+            if (i == null)
+                return true;
+            //check the distance of the other intersection we found
+            float length = Length(i.intersection - lightPos);
+            //return false if it is closer than the one we shoot the shadowray from 
+            return (length - 2 * E > dist);
+            
         }
 
     }

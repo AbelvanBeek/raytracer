@@ -49,7 +49,8 @@ namespace template
             t -= (float)Math.Sqrt(rSq - p);
             if ((t < ray.distance) && (t > 0))
                 ray.distance = t;
-            return new Intersection(ray.origin + ray.direction*ray.distance, t , this);
+            Intersection inter = new Intersection(ray.origin + ray.direction * ray.distance, t, this);
+            return inter;
         }
         public override Vector3 Normal(Vector3 intersection)
         {

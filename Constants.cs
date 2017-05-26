@@ -46,4 +46,10 @@ internal static class Constants
     {
         return (float) Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
     }
+    internal static Ray reflectRay(Ray ray, Vector3 normal)
+    {
+        ray.direction = ( ray.direction - 2 * normal * Dot(ray.direction, normal));
+        ray.origin += ray.direction * E;
+        return ray;
+    }
 }

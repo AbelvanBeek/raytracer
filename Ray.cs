@@ -6,18 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using static Constants;
 
-namespace template
+public class Ray
 {
-    public class Ray
+    public Vector3 origin;
+    public Vector3 direction;
+    public float distance = rayLength;
+    public int recursionDepth = 8;
+    public Ray(Vector3 origin, Vector3 direction)
     {
-        public Vector3 origin;
-        public Vector3 direction;
-        public float distance = rayLength;
-        public Ray(Vector3 origin, Vector3 direction)
-        {
-            this.origin = origin;
-            this.direction = direction;
-        }
-
+        this.origin = origin;
+        this.direction = direction;
     }
+
 }
