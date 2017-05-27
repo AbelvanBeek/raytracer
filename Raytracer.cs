@@ -167,9 +167,9 @@ namespace template
             }
             if (debug) { DrawDebug(ray.origin, i.intersection, new Vector3(0.5f, 0, 1)); }
             //check the distance of the other intersection we found
-            float length = Length(i.intersection - lightPos);
+            float length = Length(lightPos - i.intersection);
             //return false if it is closer than the one we shoot the shadowray from
-            return (length - 2 * E < dist);
+            return (length > dist - 2 * E);
             
         }
 
