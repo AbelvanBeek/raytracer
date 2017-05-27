@@ -12,8 +12,8 @@ internal static class Constants
     internal static int screenHeight = 512;
     internal static int axisLength = 5;
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
-    internal static float rayLength = 100f;
-    internal static float E = 0.1f;
+    internal static float rayLength = 1000f;
+    internal static float E = 0.001f;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
 

@@ -15,7 +15,6 @@ namespace template
         Camera camera;
         static List<Primitive> primitives;
         static List<Light> lightSources;
-        double counter;
         float scale = 1f / 256f;
         public bool debug2D = true;
         public Vector3[] rays2D;
@@ -41,7 +40,7 @@ namespace template
                 for (int y = -256; y < 256; y++)
                 {
                     //the boolean debug determines wether the ray will be drawn in the debug window.
-                    debug = (debug2D && y == 0 && x % 10 == 0);
+                    debug = (debug2D && y == 0 && x % 50 == 0);
                     Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
                     n += camRotation;
                     n.Normalize();
@@ -61,7 +60,6 @@ namespace template
                 for (int i = -1; i < 2; i++)
                     display.Line(camX - 1, camY + i, camX + 1, camY + i, 0xff00ff);
                 //breedte van het scherm/2
-                counter += 0.1d;
                 int screenX = (int)(camera.screenSize / 2 * screenScale);
                 DrawPrimitives();
                 //scherm tekenen
