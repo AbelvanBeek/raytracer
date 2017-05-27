@@ -94,8 +94,7 @@ namespace template
                 return new Vector3(0, 0, 0);
             }
             //debug for when there is an intersection
-            if (debug)
-                DrawDebug(ray.origin, intersect.intersection, new Vector3(1, 1, 1));
+            if (debug) { DrawDebug(ray.origin, intersect.intersection, new Vector3(1, 1, 1)); }
 
             //if the primitive is a mirror
             if (intersect.nearestPrimitive.reflectiveness == 1f)
@@ -113,6 +112,7 @@ namespace template
                 //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
                 return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
+            return new Vector3(0, 0, 0);
         }
 
 

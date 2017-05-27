@@ -23,6 +23,7 @@ internal static class Constants
 
     internal static int CalculateHex(Vector3 color)
     {
+        color.Normalize();
         int hexcolor = 0;
         hexcolor += (int) MathHelper.Clamp(color.X * 255, 0, 255) << 16;
         hexcolor += (int) MathHelper.Clamp(color.Y * 255, 0, 255) << 8;
