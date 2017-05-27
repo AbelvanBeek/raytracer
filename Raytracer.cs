@@ -112,7 +112,6 @@ namespace template
                 //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
                 return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
-            return new Vector3(0, 0, 0);
         }
 
 
