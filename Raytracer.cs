@@ -99,11 +99,13 @@ namespace template
             //if the primitive is a mirror
             if (intersect.nearestPrimitive.reflectiveness == 1f)
             {
-                return Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection)));
+                Ray refray = reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection);
+                return Trace(refray);
+
             }
             else if (intersect.nearestPrimitive.reflectiveness != 0f)
             {
-                return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection))) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
+                return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection)) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
             //if the primitive is not reflective
             else
@@ -121,7 +123,7 @@ namespace template
             Vector3 lighting = new Vector3(0,0,0);
             foreach (Light light in lightSources)
             {
-                Vector3 L = light.origin - intersection;
+                Vector3 L = (light.origin - intersection);
                 float dist = Length(L);
                 normal.Normalize();
                 L *= (1.0f / dist);
@@ -154,20 +156,23 @@ namespace template
                     k = i;
                 }
             }
-
             return k;
         }
 
         public bool IsVisible(Vector3 lightPos, Vector3 LightDir, float dist)
         {
-            Ray ray = new Ray(lightPos, LightDir);
+            Ray ray = new Ray(lightPos, -LightDir);
             Intersection i = IntersectScene(ray);
             if (i == null)
+            {
+                if (debug) { DrawDebug(ray.origin, ray.origin + ray.direction * ray.distance, new Vector3(1, 0, 1)); }
                 return true;
+            }
+            if (debug) { DrawDebug(ray.origin, i.intersection, new Vector3(0.5f, 0, 1)); }
             //check the distance of the other intersection we found
             float length = Length(i.intersection - lightPos);
-            //return false if it is closer than the one we shoot the shadowray from 
-            return (length - 2 * E > dist);
+            //return false if it is closer than the one we shoot the shadowray from
+            return (length - 2 * E < dist);
             
         }
 

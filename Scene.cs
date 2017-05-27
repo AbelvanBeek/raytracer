@@ -14,13 +14,13 @@ namespace template
 
         public Scene()
         {
-            AddPlane(new Vector3(0, -2f, 0), new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0f);
-            AddPlane(new Vector3(0, 0f, 10f), new Vector3(0, 0, 0), new Vector3(0, 0, -1), new Vector3(1, 1, 1), 0f);
+            AddPlane(new Vector3(0, -2f, 0), new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0.1f);
+            //AddPlane(new Vector3(0, 0f, 10f), new Vector3(0, 0, 0), new Vector3(0, 0, -1), new Vector3(0, 1, 1), 0f);
             AddSphere(1.5f, new Vector3(-3.5f, 0f, 7.5f), new Vector3(1, 0, 0), 0f);
             AddSphere(1.5f, new Vector3(0, 0f, 7.5f), new Vector3(0, 1, 0), 0f);
             AddSphere(1.5f, new Vector3(3.5f, 0f, 7.5f), new Vector3(0, 0, 1), 0f);
             //afhankelijk van waar je het licht plaats wordt de hele plane opeens zwart.
-            AddLight(new Vector3(0, 5f, 0f), new Vector3(10, 10, 10));
+            AddLight(new Vector3(0, 5f, 5f), new Vector3(65, 65, 65));
         }
         void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color, float reflectiveness)
         {
