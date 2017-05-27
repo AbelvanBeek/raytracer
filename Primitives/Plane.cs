@@ -33,9 +33,6 @@ namespace template
                 x = 1;
             else x = 0;
             color = new Vector3(x, x, x);
-
-            if (intersection.Z < -1)
-                return null;
             return new Intersection(intersection, Length(intersection), this);
         }
         public override Vector3 Normal(Vector3 intersection)

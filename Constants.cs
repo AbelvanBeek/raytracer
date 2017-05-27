@@ -12,7 +12,7 @@ internal static class Constants
     internal static int screenHeight = 512;
     internal static int axisLength = 5;
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
-    internal static float rayLength = 100f;
+    internal static float rayLength = 1000f;
     internal static float E = 0.001f;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
@@ -23,7 +23,6 @@ internal static class Constants
 
     internal static int CalculateHex(Vector3 color)
     {
-        color.Normalize();
         int hexcolor = 0;
         hexcolor += (int) MathHelper.Clamp(color.X * 255, 0, 255) << 16;
         hexcolor += (int) MathHelper.Clamp(color.Y * 255, 0, 255) << 8;
