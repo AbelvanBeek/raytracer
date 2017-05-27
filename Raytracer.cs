@@ -151,13 +151,8 @@ namespace template
                 {
                     x = i.distance;
                     k = i;
-
-                    //Removes intersection points behind 0,0,0)
-                    if (k.intersection.Z < 0) return null;
                 }
-
             }
-
             return k;
         }
 
