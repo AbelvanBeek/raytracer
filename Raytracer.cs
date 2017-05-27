@@ -114,7 +114,6 @@ namespace template
                 //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
                 return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
-            return new Vector3(0, 0, 0);
         }
 
 
@@ -140,7 +139,7 @@ namespace template
 
         public void DrawDebug(Vector3 rayOrigin, Vector3 x, Vector3 color)
         {
-                    display.Line(Tx(rayOrigin.X), Ty(rayOrigin.Z), Tx(x.X), Ty(x.Z), CalculateHex(color));
+            display.Line(Tx(rayOrigin.X), Ty(rayOrigin.Z), Tx(x.X), Ty(x.Z), CalculateHex(color));
         }
 
         public Intersection IntersectScene(Ray ray)
@@ -154,8 +153,13 @@ namespace template
                 {
                     x = i.distance;
                     k = i;
+
+                    //Removes intersection points behind 0,0,0)
+                    if (k.intersection.Z < 0) return null;
                 }
+
             }
+
             return k;
         }
 
