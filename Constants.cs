@@ -15,6 +15,8 @@ internal static class Constants
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
     internal static float rayLength = 1000f;
     internal static float E = 0.001f;
+    internal static float OneOver256 = 1/256;
+
 
     internal static bool antiAliasing = true;
 
@@ -34,6 +36,14 @@ internal static class Constants
         hexcolor += (int) MathHelper.Clamp(color.Z * 255, 0, 255);
 
         return hexcolor;
+    }
+    internal static Vector3 CalculateColor(int hex)
+    {
+
+        return new Vector3((float)((hex>>16)&0xFF) /255, (float)((hex>>8) & 0xFF) /255, (float) ((hex) & 0xFF) / 255);
+        //((hex << 8) >> 32) / 255
+        // ((hex << 16) >> 32) /256
+        // ((hex << 24) >> 32) /256)
     }
 
     internal static int Tx(float x)
@@ -58,5 +68,9 @@ internal static class Constants
         ray.direction = ( ray.direction - 2 * normal * Dot(ray.direction, normal));
         ray.origin = intersection + ray.direction * E;
         return ray;
+    }
+    internal static Vector3 Cross(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
     }
 }
