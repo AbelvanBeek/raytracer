@@ -8,6 +8,7 @@ using Template;
 
 internal static class Constants
 {
+    //initialization
     internal static int screenWidth = 1025;
     internal static int screenHeight = 512;
     internal static int axisLength = 5;
@@ -15,12 +16,16 @@ internal static class Constants
     internal static float rayLength = 1000f;
     internal static float E = 0.001f;
 
+    internal static bool antiAliasing = true;
+
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
 
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
     internal static Template.Surface display;
 
+
+    //formulas
     internal static int CalculateHex(Vector3 color)
     {
         int hexcolor = 0;

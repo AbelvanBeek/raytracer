@@ -55,6 +55,8 @@ namespace template
                 camRotation.Y -= 0.2f; UpdateScreen();
             if (k.IsKeyDown(Key.D))
                 camRotation.X += 0.2f; UpdateScreen();
+            if (k.IsKeyDown(Key.P))
+                antiAliasing = !antiAliasing; UpdateScreen();
         }
 
         public void UpdateScreen()

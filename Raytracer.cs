@@ -47,7 +47,10 @@ namespace template
                     Ray ray = new Ray(camera.position, n);
 
                     //trace the primary ray
-                    display.Pixel(x + 256, y + 256, CalculateHex(Trace(ray)));
+                    if (antiAliasing)
+                        display.Pixel(x + 256, y + 256, CalculateHex(AntiAliasing(ray)));
+                    else
+                        display.Pixel(x + 256, y + 256, CalculateHex(Trace(ray)));
                 }
             }
 
@@ -65,6 +68,27 @@ namespace template
                 //scherm tekenen
                 display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0x0000ff);
             }
+        }
+
+        Vector3 AntiAliasing(Ray ray)
+        {
+            Vector3 averageColor = new Vector3(0, 0, 0);
+            Vector3 mainColor = Trace(ray);
+            float sampleSize = 512f;
+            Matrix4x2 jitterMatrix = new Matrix4x2(
+                -1f / sampleSize, 1f / sampleSize,
+                1f / sampleSize, 1f / sampleSize,
+                -1f / sampleSize, -1f / sampleSize,
+                1f / sampleSize, -1f / sampleSize);
+            for (int sample = 0; sample < 4; sample++)
+            {
+                Ray jitterRay = ray;
+                jitterRay.direction.X += jitterMatrix[sample, 0];
+                jitterRay.direction.Y += jitterMatrix[sample, 1];
+                jitterRay.direction.Normalize();
+                averageColor += 1/8f * Trace(jitterRay);
+            }
+            return averageColor += 0.5f * mainColor;
         }
 
         void DrawPrimitives()
