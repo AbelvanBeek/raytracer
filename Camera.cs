@@ -44,19 +44,21 @@ namespace template
             if (k.IsKeyDown(Key.X))
                 position.Z -= 0.05f;
             if (k.IsKeyDown(Key.C))
-                screenDistance += 0.05f; UpdateScreen();
+                screenDistance += 0.05f; 
             if (k.IsKeyDown(Key.V))
-                screenDistance -= 0.05f; UpdateScreen();
+                screenDistance -= 0.05f; 
             if (k.IsKeyDown(Key.W))
-                camRotation.Y += 0.2f; UpdateScreen();
+                camRotation.Y += 0.2f; 
             if (k.IsKeyDown(Key.A))
-                camRotation.X -= 0.2f; UpdateScreen();
+                camRotation.X -= 0.2f; 
             if (k.IsKeyDown(Key.S))
-                camRotation.Y -= 0.2f; UpdateScreen();
+                camRotation.Y -= 0.2f; 
             if (k.IsKeyDown(Key.D))
-                camRotation.X += 0.2f; UpdateScreen();
+                camRotation.X += 0.2f;
             if (k.IsKeyDown(Key.P))
-                antiAliasing = !antiAliasing; UpdateScreen();
+                Photograph.PhotographMode(true);
+            if (k.IsKeyDown(Key.O))
+                Photograph.PhotographMode(false);
         }
 
         public void UpdateScreen()
