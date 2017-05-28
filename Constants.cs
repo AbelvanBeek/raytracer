@@ -17,14 +17,16 @@ internal static class Constants
     internal static float E = 0.001f;
     internal static float OneOver256 = 1/256;
 
-
+    //Photograph variables
     internal static bool antiAliasing = true;
+    internal static int recursionCount = 3;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
 
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
     internal static Template.Surface display;
+    internal static Random random = new Random();
 
 
     //formulas
