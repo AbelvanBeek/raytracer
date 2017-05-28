@@ -15,7 +15,7 @@ namespace template
         Surface map;
         public Vector3[,] texture ;
 
-        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness) : base(position, color, reflectiveness)
+        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness, float gloss) : base(position, color, reflectiveness, gloss)
         {
             map = new Surface("../../assets/wood.png");
             texture = new Vector3[map.width,map.height];

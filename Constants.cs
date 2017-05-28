@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Template;
 
 internal static class Constants
-{
+{ 
     //initialization
     internal static int screenWidth = 1025;
     internal static int screenHeight = 512;
@@ -19,13 +19,14 @@ internal static class Constants
 
     //Photograph variables
     internal static bool antiAliasing = true;
-    internal static int recursionCount = 8;
+    internal static int recursionCount = 3;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
 
     internal static Vector3 centerDebug = new Vector3(0, 0, 0);
 
     internal static Template.Surface display;
+    internal static Random random = new Random();
 
 
     //formulas

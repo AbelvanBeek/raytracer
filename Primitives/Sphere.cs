@@ -13,7 +13,7 @@ namespace template
         float radius;
         float steps = 100f;
 
-        public Sphere(float radius, Vector3 position, Vector3 color, float reflectiveness) : base(position, color, reflectiveness)
+        public Sphere(float radius, Vector3 position, Vector3 color, float reflectiveness, float gloss) : base(position, color, reflectiveness, gloss)
         {
             this.radius = radius;
         }

@@ -74,21 +74,34 @@ namespace template
         {
             Vector3 averageColor = new Vector3(0, 0, 0);
             Vector3 mainColor = Trace(ray);
-            float sampleSize = 512f;
-            Matrix4x2 jitterMatrix = new Matrix4x2(
+            float sampleSize = 200f;
+            Matrix4x2 plusMatrix = new Matrix4x2(
                 -1f / sampleSize, 1f / sampleSize,
                 1f / sampleSize, 1f / sampleSize,
                 -1f / sampleSize, -1f / sampleSize,
                 1f / sampleSize, -1f / sampleSize);
+
+            Matrix4x2 multiplyMatrix = new Matrix4x2(
+                0, 1f / sampleSize,
+                1f / sampleSize, 0,
+                -1f / sampleSize, 0,
+                0, -1f / sampleSize);
+
             for (int sample = 0; sample < 4; sample++)
             {
-                Ray jitterRay = ray;
-                jitterRay.direction.X += jitterMatrix[sample, 0];
-                jitterRay.direction.Y += jitterMatrix[sample, 1];
-                jitterRay.direction.Normalize();
-                averageColor += 1/8f * Trace(jitterRay);
+                Ray plusRay = ray;
+                plusRay.direction.X += plusMatrix[sample, 0];
+                plusRay.direction.Y += plusMatrix[sample, 1];
+                plusRay.direction.Normalize();
+                averageColor += (1 / 16f) * Trace(plusRay);
+                
+                Ray multiplyRay = ray;
+                multiplyRay.direction.X += multiplyMatrix[sample, 0];
+                multiplyRay.direction.Y += multiplyMatrix[sample, 1];
+                multiplyRay.direction.Normalize();
+                averageColor += (1 / 16f) * Trace(multiplyRay);
             }
-            return averageColor += 0.5f * mainColor;
+            return averageColor += 0.8f * mainColor;
         }
 
         void DrawPrimitives()
@@ -123,7 +136,6 @@ namespace template
             {
                 Ray refray = reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection);
                 return Trace(refray);
-
             }
             else if (intersect.nearestPrimitive.reflectiveness != 0f)
             {
@@ -132,6 +144,12 @@ namespace template
             //if the primitive is not reflective
             else
             {
+                /*
+                if (intersect.nearestPrimitive.gloss > 0.9f)
+                {
+                    return GlossIllumination(ray, intersect.nearestPrimitive, intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.nearestPrimitive.gloss);
+                }
+                */
                 //directIllumination casts a shadow ray.
                 //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
                 return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
@@ -157,6 +175,28 @@ namespace template
                 lighting = (light.intensity * Dot(normal, L) * attenuation);
             }
             return lighting;
+        }
+
+        Vector3 GlossIllumination(Ray ray, Primitive nearest, Vector3 intersection, Vector3 normal, float gloss)
+        {
+            ray.direction.Normalize();
+            Vector3 lighting = new Vector3(0, 0, 0);
+            normal.Normalize();
+            Vector3 refDir = ray.direction - 2 * normal * Dot(ray.direction, normal);
+            refDir.Normalize();
+            Vector3 ranDir;
+
+            Ray reflect = new Ray(intersection, refDir);
+
+            for (int i = 0; i < 30; i++)
+            {
+                ranDir = refDir - new Vector3(random.Next(-1, 1) * (float)random.NextDouble(), random.Next(-1, 1) * (float)random.NextDouble(), random.Next(-1, 1) * (float)random.NextDouble());
+                ranDir.Normalize();
+                Ray rand = new Ray(intersection, ranDir);
+                lighting += new Vector3(1,1,1) * (float)Math.Pow(Dot(ranDir, refDir), gloss);
+            }
+
+            return lighting/30;
         }
 
         public void DrawDebug(Vector3 rayOrigin, Vector3 x, Vector3 color)

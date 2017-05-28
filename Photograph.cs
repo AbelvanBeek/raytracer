@@ -12,7 +12,7 @@ static class Photograph
         if (status)
         {
             antiAliasing = true;
-            recursionCount = 100;
+            recursionCount = 3;
         }
 
         else
