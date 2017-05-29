@@ -7,19 +7,24 @@ using System.Threading.Tasks;
 using Template;
 
 internal static class Constants
-{ 
+{
     //initialization
     internal static int screenWidth = 1025;
     internal static int screenHeight = 512;
     internal static int axisLength = 5;
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
-    internal static float rayLength = 1000f;
+    internal static float rayLength = 100f;
     internal static float E = 0.001f;
     internal static float OneOver256 = 1/256;
+    internal static int scw4 = screenWidth / 4;
+    internal static int sch2 = screenHeight / 2;
+    internal static float glassRef = 1.52f;
+    internal static float nrDebugrays = 50; //every xth ray will be visible in the debug window (for y = 0)
+
 
     //Photograph variables
     internal static bool antiAliasing = true;
-    internal static int recursionCount = 3;
+    internal static int recursionCount = 8;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
 
@@ -43,9 +48,6 @@ internal static class Constants
     {
 
         return new Vector3((float)((hex>>16)&0xFF) /255, (float)((hex>>8) & 0xFF) /255, (float) ((hex) & 0xFF) / 255);
-        //((hex << 8) >> 32) / 255
-        // ((hex << 16) >> 32) /256
-        // ((hex << 24) >> 32) /256)
     }
 
     internal static int Tx(float x)
@@ -74,5 +76,13 @@ internal static class Constants
     internal static Vector3 Cross(Vector3 a, Vector3 b)
     {
         return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+    }
+
+    internal static float insideSphere(Vector3 origin, Vector3 spherePos, float radius)
+    {
+        if (Length(origin - spherePos) < radius + E)
+            return -1; // inside sphere
+        else
+            return 1; // outside sphere
     }
 }
