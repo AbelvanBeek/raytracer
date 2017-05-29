@@ -42,7 +42,7 @@ namespace template
                 for (int y = -sch2; y < sch2; y++)
                 {
                     //the boolean debug determines wether the ray will be drawn in the debug window.
-                    debug = (debug2D && y == 0 && x % 50 == 0);
+                    debug = (debug2D && y == 0 && x % nrDebugrays == 0);
                     Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
                     n += camRotation;
                     n.Normalize();
@@ -89,7 +89,7 @@ namespace template
                 -1f / sampleSize, 0,
                 0, -1f / sampleSize);
 
-            for (int sample = 0; sample < 4; sample++)
+            for (int sample = 0; sample < 0; sample++)
             {
                 Ray plusRay = ray;
                 plusRay.direction.X += plusMatrix[sample, 0];
@@ -136,38 +136,32 @@ namespace template
             //if the primitive is a mirror
             if (intersect.nearestPrimitive.reflectiveness == 1f)
             {
-                Ray refray = reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection);
+                Ray refray = reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction), intersect.intersection);
                 return Trace(refray);
             }
             else if (intersect.nearestPrimitive.reflectiveness != 0f)
             {
-                return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection)) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
+                return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction), intersect.intersection)) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
             }
             else if (intersect.nearestPrimitive.glass)
             {
                 float n = 1 / glassRef;
                 Sphere sphere = (Sphere) intersect.nearestPrimitive;
-                Vector3 N = intersect.nearestPrimitive.Normal(intersect.intersection) * insideSphere(ray.origin, sphere.position, sphere.radius);
-                float cosI = -Dot(N, ray.direction);
+                Vector3 N = intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction);
+                float cosI = Dot(N, ray.direction);
                 float cosT2 = 1f - n * n * (1.0f - cosI * cosI);
                 if (cosT2 > 0.0f)
                 {
                     Vector3 T = (n * ray.direction) + (float)(n * cosI - Math.Sqrt(cosT2)) * N;
+                    T.Normalize();
                     ray.direction = T;
+                    ray.origin = intersect.intersection;
                     ray.origin += E * ray.direction;
                     return Trace(ray);
                 }
             }
             //if the primitive is not reflective
-           return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
-        }
-
-        public float insideSphere(Vector3 origin, Vector3 spherePos, float radius)
-        {
-            if (Length(origin - spherePos) > radius)
-                return -1; // inside sphere
-            else
-                return 1; // outside sphere
+           return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
         }
 
 
@@ -186,7 +180,7 @@ namespace template
                     return new Vector3(0, 0, 0);
 
                 float attenuation = 1 / (dist * dist);
-                lighting = (light.intensity * Dot(normal, L) * attenuation);
+                lighting += (light.intensity * Dot(normal, L) * attenuation);
             }
             return lighting;
         }
@@ -238,7 +232,7 @@ namespace template
         {
             Ray ray = new Ray(lightPos, -LightDir);
             Intersection i = IntersectScene(ray);
-            if (i == null)
+            if (i == null || i.nearestPrimitive.glass)
             {
                 if (debug) { DrawDebug(ray.origin, ray.origin + ray.direction * ray.distance, new Vector3(1, 0, 1)); }
                 return true;

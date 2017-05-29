@@ -25,16 +25,29 @@ namespace template
             if (t < 0)
                 return null;
             intersection = ray.origin + t * ray.direction;
-            if (t < 10)
+            if (textured && t < rayLength) //intersection points (nearly) infinitely far cause some problems
             {
                 Vector3 u = new Vector3(normal.Y, normal.Z, -normal.X);
                 Vector3 v = Cross(u, normal);
                 Vector2 p = new Vector2((Math.Abs(Dot(intersection, u) +50) * 100) % (map.width), Math.Abs((Dot(intersection, v) +50) * 100) % (map.height));
                 color = texture[(int)p.X, (int)p.Y];
             }
+            else //chessboard texture
+            {
+                Vector3 u = new Vector3(normal.Y, normal.Z, -normal.X);
+                Vector3 v = Cross(u, normal);
+                Vector2 p = new Vector2(((Dot(intersection, u) +100) * 1) % (2), ((Dot(intersection, v) + 100) * 1) % (2));
+                int x = (int)(p.X + 100) % 2;
+                int z = (int)(p.Y + 100) % 2;
+                if (x == z)
+                    x = 1;
+                else
+                    x = 0;
+                color = new Vector3(x ,x,x);
+            }
             return new Intersection(intersection, Length(intersection), this);
         }
-        public override Vector3 Normal(Vector3 intersection)
+        public override Vector3 Normal(Vector3 intersection, Vector3 rayDir)
         {
             return normal;
         }

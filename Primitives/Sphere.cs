@@ -47,7 +47,7 @@ namespace template
             Vector3 q = c - t* ray.direction;
             float p = Dot(q, q);
             if (p > rSq) return null;
-            t -= (float)Math.Sqrt(rSq - p);
+                t -= insideSphere(ray.origin, position, radius) * (float)Math.Sqrt(rSq - p);
             if (t < 0)
                 return null;
             if ((t < ray.distance) && (t > 0))
@@ -55,7 +55,7 @@ namespace template
             Intersection inter = new Intersection(ray.origin + ray.direction * t, t, this);
             return inter;
         }
-        public override Vector3 Normal(Vector3 intersection)
+        public override Vector3 Normal(Vector3 intersection, Vector3 rayDir)
         {
             Vector3 n = (intersection - position);
             n.Normalize();

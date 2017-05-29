@@ -41,7 +41,7 @@ namespace template
         public virtual void DrawPrimitive() { }
         public virtual Intersection CalculateIntersection(Ray ray) { return null; }
 
-        public virtual Vector3 Normal(Vector3 intersection)
+        public virtual Vector3 Normal(Vector3 intersection, Vector3 rayDir)
         {
             return new Vector3(0, 0, 0);
         }
