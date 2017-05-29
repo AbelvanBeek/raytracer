@@ -147,7 +147,7 @@ namespace template
                 
                 if (intersect.nearestPrimitive.gloss != 0)
                 {
-                    return 0.5f * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color + 0.5f * GlossIllumination(ray, intersect.nearestPrimitive, intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.nearestPrimitive.gloss);
+                    return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color * GlossIllumination(ray, intersect.nearestPrimitive, intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.nearestPrimitive.gloss);
                 }
                 
                 //directIllumination casts a shadow ray.
@@ -184,24 +184,34 @@ namespace template
             foreach(Light light in lightSources)
             {
                 Vector3 L = (light.origin - intersection);
+                float dist = Length(L);
                 normal.Normalize();
+                L *= (1.0f / dist);
+
+                //test whether there is an object between the lightsource and the intersection point
+                if (!IsVisible(light.origin, L, dist))
+                    return new Vector3(0, 0, 0);
+
                 Vector3 refDir = L - 2 * normal * Dot(L, normal);
                 refDir.Normalize();
                 Vector3 ranDir;
-                //Ray reflect = new Ray(intersection, refDir);
-                float a = 50;
+                float a = Dot(nearest.Normal(intersection), refDir);
 
                 for (int i = 0; i < 30; i++)
                 {
+
+                    /*
                     float x = (float)(random.NextDouble() * (1 - Math.Cos(a)) + Math.Cos(a));
                     float r = Math.Max((float)Math.E-30, x * x - 1);
                     float random_angle = (float)(2 * Math.PI * random.NextDouble());
                     float y = r * (float)Math.Sin(random_angle);
                     float z = r * (float)Math.Cos(random_angle);
                     ranDir = new Vector3(x, y, z);
+                    */
+
+                    ranDir = new Vector3(refDir.X * (float)random.NextDouble(), refDir.Y * (float)random.NextDouble(), refDir.Z * (float)random.NextDouble());
                     ranDir.Normalize();
-                    //Ray rand = new Ray(intersection, ranDir);
-                    lighting += nearest.color * (float)Math.Pow(Dot(refDir, ranDir), gloss);
+                    lighting += light.intensity * (float)Math.Pow(Dot(refDir, ranDir), gloss);
                 }
             }
 
