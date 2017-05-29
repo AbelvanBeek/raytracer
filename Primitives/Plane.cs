@@ -12,17 +12,9 @@ namespace template
     {
         Vector3 normal;
         Vector3 distance;
-        Surface map;
-        public Vector3[,] texture ;
 
-        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness, float gloss) : base(position, color, reflectiveness, gloss)
+        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness, float gloss, string file) : base(position, color, reflectiveness, gloss, file)
         {
-            map = new Surface("../../assets/wood.png");
-            texture = new Vector3[map.width,map.height];
-            for (int x = 0; x < map.width; x++)
-                for(int y = 0; y < map.width; y++)
-                { texture[x, y] = CalculateColor( map.pixels[map.width * y + x]); }
-
             this.normal = normal;
             this.distance = distance;
         }
@@ -37,8 +29,8 @@ namespace template
             {
                 Vector3 u = new Vector3(normal.Y, normal.Z, -normal.X);
                 Vector3 v = Cross(u, normal);
-                Vector2 p = new Vector2(Math.Abs(Dot(intersection, u) * 100) % (map.width), Math.Abs(Dot(intersection, v) * 100) % (map.height));
-                color = texture[(int)p.X, (int)p.Y];//(x * screenScale, z * screenScale);
+                Vector2 p = new Vector2((Math.Abs(Dot(intersection, u) +50) * 100) % (map.width), Math.Abs((Dot(intersection, v) +50) * 100) % (map.height));
+                color = texture[(int)p.X, (int)p.Y];
             }
             return new Intersection(intersection, Length(intersection), this);
         }

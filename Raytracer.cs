@@ -19,6 +19,7 @@ namespace template
         public bool debug2D = true;
         public Vector3[] rays2D;
         public bool debug;
+        SkyDome skydome;
 
         public Raytracer()
         {
@@ -27,6 +28,7 @@ namespace template
             camera = new Camera();
             primitives = scene.primitives;
             lightSources = scene.lightSources;
+            //skydome = new SkyDome("../../assets/stpeters_probe.hdr");
         }
 
         public void Render()
@@ -35,9 +37,9 @@ namespace template
             camera.HandleInput();
 
             //trace the rays.
-            for (int x = -256; x < 256; x++)
+            for (int x = -scw4; x < scw4; x++)
             {
-                for (int y = -256; y < 256; y++)
+                for (int y = -sch2; y < sch2; y++)
                 {
                     //the boolean debug determines wether the ray will be drawn in the debug window.
                     debug = (debug2D && y == 0 && x % 50 == 0);
@@ -48,9 +50,9 @@ namespace template
 
                     //trace the primary ray
                     if (antiAliasing)
-                        display.Pixel(x + 256, y + 256, CalculateHex(AntiAliasing(ray)));
+                        display.Pixel(x + scw4, y + sch2, CalculateHex(AntiAliasing(ray)));
                     else
-                        display.Pixel(x + 256, y + 256, CalculateHex(Trace(ray)));
+                        display.Pixel(x + scw4, y + sch2, CalculateHex(Trace(ray)));
                 }
             }
 
@@ -141,19 +143,31 @@ namespace template
             {
                 return intersect.nearestPrimitive.reflectiveness * Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.intersection)) + (1 - intersect.nearestPrimitive.reflectiveness) * DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
-            //if the primitive is not reflective
-            else
+            else if (intersect.nearestPrimitive.glass)
             {
-                /*
-                if (intersect.nearestPrimitive.gloss > 0.9f)
+                float n = 1 / glassRef;
+                Sphere sphere = (Sphere) intersect.nearestPrimitive;
+                Vector3 N = intersect.nearestPrimitive.Normal(intersect.intersection) * insideSphere(ray.origin, sphere.position, sphere.radius);
+                float cosI = -Dot(N, ray.direction);
+                float cosT2 = 1f - n * n * (1.0f - cosI * cosI);
+                if (cosT2 > 0.0f)
                 {
-                    return GlossIllumination(ray, intersect.nearestPrimitive, intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection), intersect.nearestPrimitive.gloss);
+                    Vector3 T = (n * ray.direction) + (float)(n * cosI - Math.Sqrt(cosT2)) * N;
+                    ray.direction = T;
+                    ray.origin += E * ray.direction;
+                    return Trace(ray);
                 }
-                */
-                //directIllumination casts a shadow ray.
-                //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
-                return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
             }
+            //if the primitive is not reflective
+           return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection)) * intersect.nearestPrimitive.color;
+        }
+
+        public float insideSphere(Vector3 origin, Vector3 spherePos, float radius)
+        {
+            if (Length(origin - spherePos) > radius)
+                return -1; // inside sphere
+            else
+                return 1; // outside sphere
         }
 
 

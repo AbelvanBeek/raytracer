@@ -10,10 +10,11 @@ namespace template
 {
     class Sphere : Primitive
     {
-        float radius;
+        public float radius;
         float steps = 100f;
 
-        public Sphere(float radius, Vector3 position, Vector3 color, float reflectiveness, float gloss) : base(position, color, reflectiveness, gloss)
+
+        public Sphere(float radius, Vector3 position, Vector3 color, float reflectiveness, float gloss, string file) : base(position, color, reflectiveness, gloss, file)
         {
             this.radius = radius;
         }

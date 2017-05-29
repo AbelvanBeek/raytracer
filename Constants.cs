@@ -13,9 +13,12 @@ internal static class Constants
     internal static int screenHeight = 512;
     internal static int axisLength = 5;
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
-    internal static float rayLength = 1000f;
+    internal static float rayLength = 100f;
     internal static float E = 0.001f;
     internal static float OneOver256 = 1/256;
+    internal static int scw4 = screenWidth / 4;
+    internal static int sch2 = screenHeight / 2;
+    internal static float glassRef = 1.52f;
 
     //Photograph variables
     internal static bool antiAliasing = true;
@@ -43,9 +46,6 @@ internal static class Constants
     {
 
         return new Vector3((float)((hex>>16)&0xFF) /255, (float)((hex>>8) & 0xFF) /255, (float) ((hex) & 0xFF) / 255);
-        //((hex << 8) >> 32) / 255
-        // ((hex << 16) >> 32) /256
-        // ((hex << 24) >> 32) /256)
     }
 
     internal static int Tx(float x)
