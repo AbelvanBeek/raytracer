@@ -194,6 +194,40 @@ namespace template
 
         Vector3 GlossIllumination(Ray ray, Primitive nearest, Vector3 intersection, Vector3 normal, float gloss)
         {
+            Vector3 lighting = new Vector3(0, 0, 0);
+            Ray testRay = new Ray(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            testRay.recursionDepth = 1;
+
+            foreach (Light light in lightSources)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    float a = (float)random.NextDouble() / random.Next(1, 5);
+                    float b = (float)random.NextDouble() / random.Next(1, 5);
+                    float theta = (float)Math.Acos(Math.Pow((1 - a), nearest.gloss));
+                    float phi = 2 * (float)Math.PI * b;
+                    float x = (float)(Math.Sin(phi) * Math.Cos(theta));
+                    float y = (float)(Math.Sin(phi) * Math.Sin(theta));
+                    float z = (float)(Math.Cos(phi));
+                    Vector3 L = (light.origin - intersection);
+                    Vector3 refDir = L - 2 * normal * Dot(L, normal);
+                    Vector3 u = Cross(refDir, nearest.Normal(intersection, ray.direction));
+                    Vector3 v = Cross(refDir, u);
+                    testRay.direction = x * u + y * v + refDir;
+                    testRay.direction.Normalize();
+
+                    testRay.origin = intersection + E * testRay.direction;
+                    if (ray.recursionDepth >70)
+                        return new Vector3(1,1,1);
+
+                    lighting += nearest.gloss * Trace(testRay);
+                    testRay.recursionDepth = 100;
+                }
+            }
+
+            return lighting/10;
+            
+            /*
             ray.direction.Normalize();
             Vector3 lighting = new Vector3(0, 0, 0);
             foreach(Light light in lightSources)
@@ -215,14 +249,14 @@ namespace template
                 for (int i = 0; i < 30; i++)
                 {
 
-                    /*
+                    
                     float x = (float)(random.NextDouble() * (1 - Math.Cos(a)) + Math.Cos(a));
                     float r = Math.Max((float)Math.E-30, x * x - 1);
                     float random_angle = (float)(2 * Math.PI * random.NextDouble());
                     float y = r * (float)Math.Sin(random_angle);
                     float z = r * (float)Math.Cos(random_angle);
                     ranDir = new Vector3(x, y, z);
-                    */
+                    
 
                     ranDir = new Vector3(refDir.X * (float)random.NextDouble(), refDir.Y * (float)random.NextDouble(), refDir.Z * (float)random.NextDouble());
                     ranDir.Normalize();
@@ -231,6 +265,7 @@ namespace template
             }
 
             return lighting/30;
+        */
         }
 
         public void DrawDebug(Vector3 rayOrigin, Vector3 x, Vector3 color)
