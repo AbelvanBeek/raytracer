@@ -19,7 +19,7 @@ namespace template
 
         public Camera()
         {
-            position = new Vector3(0, 0f, 2);
+            position = new Vector3(0, 0f, 0);
             direction = new Vector3(0, 0, 1);
             screenSize = 2;
             screenDistance = 1;
