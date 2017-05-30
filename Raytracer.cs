@@ -20,7 +20,6 @@ namespace template
         public bool debug2D = true;
         public Vector3[] rays2D;
         public bool debug;
-        SkyDome skydome;
 
         public Raytracer()
         {
@@ -29,7 +28,6 @@ namespace template
             camera = new Camera();
             primitives = scene.primitives;
             lightSources = scene.lightSources;
-            //skydome = new SkyDome("../../assets/stpeters_probe.hdr");
         }
 
         Task[] tasks = new Task[threads];
@@ -38,7 +36,7 @@ namespace template
             display.Clear(0x00000);
             camera.HandleInput();
 
-            //trace the rays.
+            //multithreading doesnt really work
             for (int u = 0; u < threads; u++)
             {
                 tasks[u] = new Task(() => { CastRays(u); });
@@ -70,10 +68,12 @@ namespace template
                 {
                     //the boolean debug determines wether the ray will be drawn in the debug window.
                     debug = (debug2D && y == 0 && x % nrDebugrays == 0);
+
                     Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
                     n += camRotation;
                     n.Normalize();
                     Ray ray = new Ray(camera.position, n);
+
                     //trace the primary ray
                     if (antiAliasing)
                         display.Pixel(x + scw4, y + sch2, CalculateHex(AntiAliasing(ray)));
@@ -86,8 +86,11 @@ namespace template
         Vector3 AntiAliasing(Ray ray)
         {
             Vector3 averageColor = new Vector3(0, 0, 0);
+            //save color of primary ray
             Vector3 mainColor = Trace(ray);
-            float sampleSize = 200f;
+            float sampleSize = 128f;
+
+            //determine offset
             Matrix4x2 plusMatrix = new Matrix4x2(
                 -1f / sampleSize, 1f / sampleSize,
                 1f / sampleSize, 1f / sampleSize,
@@ -100,21 +103,23 @@ namespace template
                 -1f / sampleSize, 0,
                 0, -1f / sampleSize);
 
-            for (int sample = 0; sample < 0; sample++)
+            //trace 8 offset rays
+            for (int sample = 0; sample < 4; sample++)
             {
                 Ray plusRay = ray;
                 plusRay.direction.X += plusMatrix[sample, 0];
                 plusRay.direction.Y += plusMatrix[sample, 1];
                 plusRay.direction.Normalize();
-                averageColor += (1 / 16f) * Trace(plusRay);
+                averageColor += (1 / 60f) * Trace(plusRay);
                 
                 Ray multiplyRay = ray;
                 multiplyRay.direction.X += multiplyMatrix[sample, 0];
                 multiplyRay.direction.Y += multiplyMatrix[sample, 1];
                 multiplyRay.direction.Normalize();
-                averageColor += (1 / 16f) * Trace(multiplyRay);
+                averageColor += (1 / 60f) * Trace(multiplyRay);
             }
-            return averageColor += 0.8f * mainColor;
+            //combine all
+            return averageColor += 0.9f * mainColor;
         }
 
         void DrawPrimitives()
@@ -176,15 +181,16 @@ namespace template
                 L *= (1.0f / dist);
 
                 //test whether there is an object between the lightsource and the intersection point
-                if (!IsVisible(light.origin, L, dist))
-                    return new Vector3(0, 0, 0);
-
-                float attenuation = 1 / (dist * dist);
-                lighting += (light.intensity * Dot(normal, L) * attenuation);
+                if (IsVisible(light.origin, L, dist))
+                {
+                    float attenuation = 1 / (dist * dist);
+                    lighting += (light.intensity * Dot(normal, L) * attenuation);
+                }
             }
             return lighting;
         }
 
+        //Gloss illumination not really working
         Vector3 GlossIllumination(Ray ray, Primitive nearest, Vector3 intersection, Vector3 normal, float gloss)
         {
             Vector3 lighting = new Vector3(0, 0, 0);

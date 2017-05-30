@@ -13,16 +13,15 @@ namespace template
         Vector3 normal;
         Vector3 distance;
 
-        public Plane(Vector3 normal, Vector3 distance, Vector3 position, Vector3 color, float reflectiveness, float gloss, string file) : base(position, color, reflectiveness, gloss, file)
+        public Plane(Vector3 normal, Vector3 position, Vector3 color, float reflectiveness, float gloss, string file) : base(position, color, reflectiveness, gloss, file)
         {
             this.normal = normal;
-            this.distance = distance;
         }
         public override Intersection CalculateIntersection(Ray ray)
         {
             Vector3 intersection;
             float t = (Dot(position - ray.origin, normal) / Dot(ray.direction, normal));
-            if (t < 0)
+            if (t < 0) 
                 return null;
             intersection = ray.origin + t * ray.direction;
             if (textured && t < rayLength) //intersection points (nearly) infinitely far cause some problems
@@ -36,7 +35,7 @@ namespace template
             {
                 Vector3 u = new Vector3(normal.Y, normal.Z, -normal.X);
                 Vector3 v = Cross(u, normal);
-                Vector2 p = new Vector2(((Dot(intersection, u) +100) * 1) % (2), ((Dot(intersection, v) + 100) * 1) % (2));
+                Vector2 p = new Vector2(((Dot(intersection, u) +100) * 0.75f) % (2), ((Dot(intersection, v) + 100) * 0.75f) % (2));
                 int x = (int)(p.X + 100) % 2;
                 int z = (int)(p.Y + 100) % 2;
                 if (x == z)

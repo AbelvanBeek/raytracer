@@ -14,24 +14,24 @@ namespace template
 
         public Scene()
         {
-            AddPlane(new Vector3(0, -2f, 0), new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0.1f, 0f, "../../assets/wood.png"); //floor
-            AddPlane(new Vector3(0, 7f, 0), new Vector3(0, 0, 0), new Vector3(0, -1, 0), new Vector3(1, 1, 1f), 0.2f, 0f, null); //ceiling
-            AddPlane(new Vector3(0, 0f, 10f), new Vector3(0, 0, 0), new Vector3(0, 0, -1), new Vector3(1, 1, 1), 0f, 0f, null); //back wall
-            AddPlane(new Vector3(0, 0f, -.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1), new Vector3(1, 1, 1), 0f, 0f, null); //behind wall
-            AddPlane(new Vector3(-7, 0f, 0f), new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 1, 1), 0f, 0f, null); // left wall
-            AddPlane(new Vector3(7, 0f, 0f), new Vector3(0, 0, 0), new Vector3(-1, 0, 0), new Vector3(1, 1, 1), 0f, 0f, null); // right wall
+            AddPlane(new Vector3(0, -4f, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0.5f, 0f, null); //floor
+            AddPlane(new Vector3(0, 0f, 12f), new Vector3(0, 0, -1), new Vector3(1, 1, 1), 0f, 0f, "../../assets/galaxy.png"); //back wall
+            AddPlane(new Vector3(0, 0f, -.5f), new Vector3(0, 0, 1), new Vector3(1, 1, 1), 0f, 0f, "../../assets/wood.png"); //behind wall
+            AddPlane(new Vector3(-8, 0f, 0f), new Vector3(1, 0, 0), new Vector3(1, 1, 1), 0.2f, 0f, "../../assets/galaxy.png"); // left wall
+            AddPlane(new Vector3(8, 0f, 0f), new Vector3(-1, 0, 0), new Vector3(1, 1, 1), 0.2f, 0f, "../../assets/galaxy.png"); // right wall
 
-            AddSphere(1.5f, new Vector3(-3.5f, 0f, 8f), new Vector3(1, 0, 0), 0f, 0f);
-            AddSphere(1.5f, new Vector3(0, 0f, 8f), new Vector3(0, 1, 0), 1f, 0f);
-            AddSphere(1.5f, new Vector3(3.5f, 0f, 8f), new Vector3(0, 0, 1), 0.2f, 0f);
-            AddGlassSphere(1.5f, new Vector3(0f, 0f, 4), new Vector3(1, 1, 1), 0f, 0f);
+            AddSphere(1.5f, new Vector3(-3.5f, 2f, 7f), new Vector3(1, 0, 0), 0f, 0f);
+            AddSphere(2.5f, new Vector3(2, -1f, 9f), new Vector3(1, 1, 1), 1f, 0f);
+            AddSphere(0.5f, new Vector3(2, 0f, 3f), new Vector3(1, 1, 1), 0.5f, 0f);
+            AddSphere(1.5f, new Vector3(3.5f, 3f, 7f), new Vector3(0, 0, 1), 0.2f, 0f);
+            AddGlassSphere(1f, new Vector3(-1.5f, 0f, 3), new Vector3(1, 1, 1), 0f, 0f);
 
-            AddLight(new Vector3(-4, 5, 3f), new Vector3(0, 20, 40));
-            AddLight(new Vector3(4, 5, 3f), new Vector3(40, 20, 0));
+            AddLight(new Vector3(-4, 2, 2f), new Vector3(0, 40, 80));
+            AddLight(new Vector3(4, 2, 2f), new Vector3(80, 40, 0));
         }
-        void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color, float reflectiveness, float gloss, string texFile)
+        void AddPlane(Vector3 position, Vector3 normal, Vector3 color, float reflectiveness, float gloss, string texFile)
         {
-            Plane plane = new Plane(normal, distance, position, color, reflectiveness, gloss, texFile);
+            Plane plane = new Plane(normal, position, color, reflectiveness, gloss, texFile);
             primitives.Add(plane);
         }
         void AddSphere(float radius, Vector3 position, Vector3 color, float reflectiveness, float gloss)
