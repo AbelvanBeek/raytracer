@@ -54,7 +54,6 @@ Team Codermind tutorial
 | Codermind Team. For example, we used this tutorial to see how the Fresnel calculated had to be done.
 
 Stackoverflow --> Glossy reflection in ray tracing
-|
-|
-|
-|
+| Since our own glossy reflection code did not seem to work, we started looking around on the internet.
+| Having tried numerous examples we ended up using one from stackoverflow. However, the glossy effect
+| is still far from working properly. 
