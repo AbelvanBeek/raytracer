@@ -220,7 +220,7 @@ namespace template
 
                     Intersection testInt = IntersectScene(testRay);
 
-                    lighting += theta * DirectIllumination(testInt.intersection, testInt.nearestPrimitive.Normal(testInt.intersection, testRay.direction));
+                    lighting += gloss * DirectIllumination(testInt.intersection, testInt.nearestPrimitive.Normal(testInt.intersection, testRay.direction));
                 }
             }
 
