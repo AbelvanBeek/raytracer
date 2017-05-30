@@ -19,11 +19,11 @@ internal static class Constants
     internal static int scw4 = screenWidth / 4;
     internal static int sch2 = screenHeight / 2;
     internal static float glassRef = 1.52f;
-    internal static float nrDebugrays = 100; //every xth ray will be visible in the debug window (for y = 0)
-    internal static int threads = 1;
+    internal static float nrDebugrays = 50; //every xth ray will be visible in the debug window (for y = 0)
+    internal static int threads = 1; //threads don't really work
 
     //Photograph variables
-    internal static bool antiAliasing = false;
+    internal static bool antiAliasing = true;
     internal static int recursionCount = 8;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
