@@ -161,7 +161,7 @@ namespace template
 
             }
             //if the primitive is not reflective
-           return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
+            return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
         }
 
 
@@ -187,24 +187,37 @@ namespace template
 
         Vector3 GlossIllumination(Ray ray, Primitive nearest, Vector3 intersection, Vector3 normal, float gloss)
         {
-            ray.direction.Normalize();
             Vector3 lighting = new Vector3(0, 0, 0);
-            normal.Normalize();
-            Vector3 refDir = ray.direction - 2 * normal * Dot(ray.direction, normal);
-            refDir.Normalize();
-            Vector3 ranDir;
 
-            Ray reflect = new Ray(intersection, refDir);
-
-            for (int i = 0; i < 30; i++)
+            foreach (Light light in lightSources)
             {
-                ranDir = refDir - new Vector3(random.Next(-1, 1) * (float)random.NextDouble(), random.Next(-1, 1) * (float)random.NextDouble(), random.Next(-1, 1) * (float)random.NextDouble());
-                ranDir.Normalize();
-                Ray rand = new Ray(intersection, ranDir);
-                lighting += new Vector3(1,1,1) * (float)Math.Pow(Dot(ranDir, refDir), gloss);
+                for (int i = 0; i < 10; i++)
+                {
+                    Ray testRay = new Ray(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    float a = (float)(random.NextDouble());
+                    float b = (float)(random.NextDouble());
+                    float theta = (float)Math.Acos(Math.Pow((1 - a), nearest.gloss));
+                    float phi = 2 * (float)Math.PI * b;
+                    float x = (float)(Math.Sin(phi) * Math.Cos(theta) / 16);
+                    float y = (float)(Math.Sin(phi) * Math.Sin(theta) / 16);
+                    float z = (float)(Math.Cos(phi));
+                    Vector3 L = (light.origin - intersection);
+                    Vector3 refDir = L - 2 * normal * Dot(L, normal);
+                    Vector3 u = Cross(refDir, nearest.Normal(intersection, ray.direction));
+                    Vector3 v = Cross(refDir, u);
+                    testRay.direction = x * u + y * v + refDir;
+                    testRay.direction.Normalize();
+
+                    testRay.origin = intersection + E * testRay.direction;
+                    testRay.recursionDepth = ray.recursionDepth - 1;
+
+                    Intersection testInt = IntersectScene(testRay);
+
+                    lighting += gloss * DirectIllumination(testInt.intersection, testInt.nearestPrimitive.Normal(testInt.intersection, testRay.direction));
+                }
             }
 
-            return lighting/30;
+            return lighting / 10;
         }
 
         public void DrawDebug(Vector3 rayOrigin, Vector3 x, Vector3 color)
