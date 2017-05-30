@@ -21,7 +21,7 @@ namespace template
             AddPlane(new Vector3(-7, 0f, 0f), new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 1, 1), 0f, 0f, null); // left wall
             AddPlane(new Vector3(7, 0f, 0f), new Vector3(0, 0, 0), new Vector3(-1, 0, 0), new Vector3(1, 1, 1), 0f, 0f, null); // right wall
 
-            AddSphere(1.5f, new Vector3(-3.5f, 0f, 8f), new Vector3(1, 0, 0), 0f, 1f);
+            AddSphere(1.5f, new Vector3(-3.5f, 0f, 8f), new Vector3(1, 0, 0), 0f, 0f);
             AddSphere(1.5f, new Vector3(0, 0f, 8f), new Vector3(0, 1, 0), 1f, 0f);
             AddSphere(1.5f, new Vector3(3.5f, 0f, 8f), new Vector3(0, 0, 1), 0.2f, 0f);
             AddGlassSphere(1f, new Vector3(1.75f, 0, 6), new Vector3(1, 1, 1), 0f, 0f);
