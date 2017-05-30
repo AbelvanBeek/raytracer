@@ -60,6 +60,7 @@ Anti-aliasing
 | Raytracer.cs --> AntiAliasing()
 
 Textures
+<<<<<<< HEAD
 | Through a .png file in the directory, a texture is given to a plane. This .png file is converted
 | into a two dimensional array which contains the colors of the image at the given position. If a texture is 
 | applied, the color of the plane at an intersection x/y/z will become the color value from the
@@ -70,11 +71,9 @@ Textures
 | Primitive.cs --> Primitive()
 | Plane.cs --> CalculateIntersection()
 
-Refraction/absorption
-| 
-| 
-| 
-| 
+Refraction
+|We added refraction in glass spheres. The refraction is calculated using a specific refraction index (1.52 by default)
+|Using fresnel calculations we make sure that the glass sphere partially reflects a ray and partially transmits it.
 
 Acceleration structure
 | We tried implementing multi-threading by starting a new thread for casting the rays. However, 
