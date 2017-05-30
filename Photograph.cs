@@ -12,13 +12,13 @@ static class Photograph
         if (status)
         {
             antiAliasing = true;
-            recursionCount = 3;
+            recursionCount = 8;
         }
 
-        else
+        else //slightly optimize performance
         {
             antiAliasing = false;
-            recursionCount = 3;
+            recursionCount = 6;
         }
     }
 }

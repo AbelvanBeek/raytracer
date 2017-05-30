@@ -29,12 +29,13 @@ namespace template
 
             if (texfile != null)
             {
+                //load the new texture, since we need vector3 colors we need to convert the hex colors
                 textured = true;
                 map = new Surface(texfile);
                 texture = new Vector3[map.width, map.height];
                 for (int x = 0; x < map.width; x++)
-                    for (int y = 0; y < map.width; y++)
-                    { texture[x, y] = CalculateColor(map.pixels[map.width * y + x]); }
+                    for (int y = 0; y < map.height; y++)
+                    { texture[x, y] = CalculateColor(map.pixels[map.height * y + x]); }
             }
         }
 

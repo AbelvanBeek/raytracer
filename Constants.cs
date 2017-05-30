@@ -15,8 +15,7 @@ internal static class Constants
     internal static float screenScale = (float)screenHeight / (axisLength*2) / ((float)screenHeight/(float)(screenWidth/2));
     internal static float rayLength = 100f;
     internal static float E = 0.001f;
-    internal static float OneOver256 = 1/256;
-    internal static int scw4 = screenWidth / 4;
+    internal static int scw4 = screenWidth / 4; //these two reduce the amount of divisions necesary
     internal static int sch2 = screenHeight / 2;
     internal static float glassRef = 1.52f;
     internal static float nrDebugrays = 50; //every xth ray will be visible in the debug window (for y = 0)
@@ -37,6 +36,7 @@ internal static class Constants
     //formulas
     internal static int CalculateHex(Vector3 color)
     {
+        //convert vector3 color to hexadecimal
         int hexcolor = 0;
         hexcolor += (int) MathHelper.Clamp(color.X * 255, 0, 255) << 16;
         hexcolor += (int) MathHelper.Clamp(color.Y * 255, 0, 255) << 8;
@@ -46,10 +46,11 @@ internal static class Constants
     }
     internal static Vector3 CalculateColor(int hex)
     {
-
+        //convert hex color to vector3 color
         return new Vector3((float)((hex>>16)&0xFF) /255, (float)((hex>>8) & 0xFF) /255, (float) ((hex) & 0xFF) / 255);
     }
 
+    //debug screen translations
     internal static int Tx(float x)
     {
         return (int)(2 + screenWidth / 2 + screenScale * (x + centerDebug.X + 5));
@@ -59,6 +60,7 @@ internal static class Constants
     {
         return (int)(screenHeight - screenScale * (y + centerDebug.Y + 1));
     }
+
     internal static float Dot(Vector3 a, Vector3 b)
     {
         return (a.X * b.X + a.Y * b.Y + a.Z * b.Z);
@@ -78,6 +80,7 @@ internal static class Constants
         return new Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
     }
 
+    //calculate whether the ray started in the sphere or not. used to flip around normals.
     internal static float insideSphere(Vector3 origin, Vector3 spherePos, float radius)
     {
         if (Length(origin - spherePos) < radius + E)

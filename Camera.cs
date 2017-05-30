@@ -30,6 +30,7 @@ namespace template
         }
         public void HandleInput()
         {
+            //camera controls
             KeyboardState k = Keyboard.GetState();
             if (k.IsKeyDown(Key.Up))
                 position.Y += 0.05f;
