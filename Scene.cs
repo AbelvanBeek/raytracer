@@ -14,7 +14,7 @@ namespace template
 
         public Scene()
         {
-            AddPlane(new Vector3(0, -2f, 0), new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0.2f, 0f, "../../assets/wood.png"); //floor
+            AddPlane(new Vector3(0, -2f, 0), new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1f), 0.1f, 0f, "../../assets/wood.png"); //floor
             AddPlane(new Vector3(0, 7f, 0), new Vector3(0, 0, 0), new Vector3(0, -1, 0), new Vector3(1, 1, 1f), 0.2f, 0f, null); //ceiling
             AddPlane(new Vector3(0, 0f, 10f), new Vector3(0, 0, 0), new Vector3(0, 0, -1), new Vector3(1, 1, 1), 0f, 0f, null); //back wall
             AddPlane(new Vector3(0, 0f, -.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1), new Vector3(1, 1, 1), 0f, 0f, null); //behind wall
@@ -24,9 +24,10 @@ namespace template
             AddSphere(1.5f, new Vector3(-3.5f, 0f, 8f), new Vector3(1, 0, 0), 0f, 0f);
             AddSphere(1.5f, new Vector3(0, 0f, 8f), new Vector3(0, 1, 0), 1f, 0f);
             AddSphere(1.5f, new Vector3(3.5f, 0f, 8f), new Vector3(0, 0, 1), 0.2f, 0f);
-            AddGlassSphere(1f, new Vector3(1.75f, 0, 6), new Vector3(1, 1, 1), 0f, 0f);
+            AddGlassSphere(1.5f, new Vector3(0f, 0f, 4), new Vector3(1, 1, 1), 0f, 0f);
 
-            AddLight(new Vector3(0, 5, 3f), new Vector3(20, 20, 20));
+            AddLight(new Vector3(-4, 5, 3f), new Vector3(0, 20, 40));
+            AddLight(new Vector3(4, 5, 3f), new Vector3(40, 20, 0));
         }
         void AddPlane(Vector3 position, Vector3 distance, Vector3 normal, Vector3 color, float reflectiveness, float gloss, string texFile)
         {

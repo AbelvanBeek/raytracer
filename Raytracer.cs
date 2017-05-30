@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Constants;
 
@@ -31,31 +32,19 @@ namespace template
             //skydome = new SkyDome("../../assets/stpeters_probe.hdr");
         }
 
+        Task[] tasks = new Task[threads];
         public void Render()
         {
             display.Clear(0x00000);
             camera.HandleInput();
 
             //trace the rays.
-            for (int x = -scw4; x < scw4; x++)
+            for (int u = 0; u < threads; u++)
             {
-                for (int y = -sch2; y < sch2; y++)
-                {
-                    //the boolean debug determines wether the ray will be drawn in the debug window.
-                    debug = (debug2D && y == 0 && x % nrDebugrays == 0);
-                    Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
-                    n += camRotation;
-                    n.Normalize();
-                    Ray ray = new Ray(camera.position, n);
-
-                    //trace the primary ray
-                    if (antiAliasing)
-                        display.Pixel(x + scw4, y + sch2, CalculateHex(AntiAliasing(ray)));
-                    else
-                        display.Pixel(x + scw4, y + sch2, CalculateHex(Trace(ray)));
-                }
+                tasks[u] = new Task(() => { CastRays(u); });
+                tasks[u].Start();
+                tasks[u].Wait();
             }
-
             if (debug2D)
             {
                 //de getransleerde locatie van de camera
@@ -69,6 +58,28 @@ namespace template
                 DrawPrimitives();
                 //scherm tekenen
                 display.Line(camX - screenX, Ty(camera.screenDistance + camera.position.Z), camX + screenX, Ty(camera.screenDistance + camera.position.Z), 0x0000ff);
+            }
+        }
+
+        public void CastRays(int thread)
+        {
+            int k = thread;
+            for (int x = -scw4 + k; x < scw4; x += threads)
+            {
+                for (int y = -sch2; y < sch2; y++)
+                {
+                    //the boolean debug determines wether the ray will be drawn in the debug window.
+                    debug = (debug2D && y == 0 && x % nrDebugrays == 0);
+                    Vector3 n = (x * 0.5f) * scale * (camera.screenCorners[1] - camera.screenCorners[0]) + (y * 0.5f) * scale * (camera.screenCorners[2] - camera.screenCorners[0]) + new Vector3(0, 0, camera.screenDistance);
+                    n += camRotation;
+                    n.Normalize();
+                    Ray ray = new Ray(camera.position, n);
+                    //trace the primary ray
+                    if (antiAliasing)
+                        display.Pixel(x + scw4, y + sch2, CalculateHex(AntiAliasing(ray)));
+                    else
+                        display.Pixel(x + scw4, y + sch2, CalculateHex(Trace(ray)));
+                }
             }
         }
 
@@ -145,27 +156,9 @@ namespace template
             }
             else if (intersect.nearestPrimitive.glass)
             {
-                float n = 1 / glassRef;
-                Sphere sphere = (Sphere) intersect.nearestPrimitive;
-                Vector3 N = intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction);
-                float cosI = Dot(N, ray.direction);
-                float cosT2 = 1f - n * n * (1.0f - cosI * cosI);
-                if (cosT2 > 0.0f)
-                {
-                    Vector3 T = (n * ray.direction) + (float)(n * cosI - Math.Sqrt(cosT2)) * N;
-                    T.Normalize();
-                    ray.direction = T;
-                    ray.origin = intersect.intersection;
-                    ray.origin += E * ray.direction;
-                    return Trace(ray);
-                }
-                
-                //directIllumination casts a shadow ray.
-                //als je directIllumination hier weeghaalt lijkt het net alsof het bijna klopt.
-                return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
-            }else if (intersect.nearestPrimitive.gloss != 0)
-            {
-                return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) + intersect.nearestPrimitive.color * GlossIllumination(ray, intersect.nearestPrimitive, intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction), intersect.nearestPrimitive.gloss);
+                float f = Fresnel(ray.direction, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction));
+                return (1-f) * (Trace(refractRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction), intersect.intersection))) + (f * (Trace(reflectRay(ray, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction), intersect.intersection))));
+
             }
             //if the primitive is not reflective
             return DirectIllumination(intersect.intersection, intersect.nearestPrimitive.Normal(intersect.intersection, ray.direction)) * intersect.nearestPrimitive.color;
@@ -245,6 +238,7 @@ namespace template
                     k = i;
                 }
             }
+            ray.distance -= x;
             return k;
         }
 

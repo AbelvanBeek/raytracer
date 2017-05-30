@@ -19,11 +19,11 @@ internal static class Constants
     internal static int scw4 = screenWidth / 4;
     internal static int sch2 = screenHeight / 2;
     internal static float glassRef = 1.52f;
-    internal static float nrDebugrays = 50; //every xth ray will be visible in the debug window (for y = 0)
-
+    internal static float nrDebugrays = 100; //every xth ray will be visible in the debug window (for y = 0)
+    internal static int threads = 1;
 
     //Photograph variables
-    internal static bool antiAliasing = true;
+    internal static bool antiAliasing = false;
     internal static int recursionCount = 8;
 
     internal static Vector3 camRotation = new Vector3(0, 0, 0);
@@ -69,7 +69,7 @@ internal static class Constants
     }
     internal static Ray reflectRay(Ray ray, Vector3 normal, Vector3 intersection)
     {
-        ray.direction = ( ray.direction - 2 * normal * Dot(ray.direction, normal));
+        ray.direction = ( ray.direction - 2 * normal * Dot(ray.direction, normal ));
         ray.origin = intersection + ray.direction * E;
         return ray;
     }
@@ -84,5 +84,47 @@ internal static class Constants
             return -1; // inside sphere
         else
             return 1; // outside sphere
+    }
+
+    internal static Ray refractRay(Ray ray, Vector3 Normal, Vector3 intersection)
+    {
+        float n = 1 / glassRef;
+        Ray refray = new Ray(ray.origin, ray.direction);
+        refray.recursionDepth = ray.recursionDepth - 1;
+
+        Vector3 N = Normal;
+        float cosI = Dot(N, ray.direction);
+        float cosT2 = 1f - n * n * (1.0f - cosI * cosI);
+        if (cosT2 > 0.0f)
+        {
+            Vector3 T = (n * ray.direction) + (float)(n * cosI - Math.Sqrt(cosT2)) * N;
+            T.Normalize();
+            refray.direction = T;
+            refray.origin = intersection;
+            refray.origin += E * ray.direction;
+        }
+        return refray;
+    }
+
+    internal static float Fresnel(Vector3 rayDir, Vector3 normal)
+    {
+        float ViewProjecion = Dot(rayDir, normal);
+        float CosTheta = Math.Abs(ViewProjecion);
+        float sinTheta = (float) Math.Sqrt(1 - CosTheta * CosTheta);
+        float sinThetaT = (1f / glassRef) * sinTheta;
+        if(sinThetaT * sinThetaT > 0.9999f)
+        {
+            return 1.0f;
+        }
+        else
+        {
+            float cosThetaT = (float)Math.Sqrt(1f - sinThetaT * sinThetaT);
+            float reflectanceOrtho = (1/glassRef * cosThetaT - 1f * CosTheta) / (1/glassRef * cosThetaT + 1f * CosTheta);
+            reflectanceOrtho = reflectanceOrtho * reflectanceOrtho;
+            float reflectancePara = (1f * cosThetaT - 1/glassRef * CosTheta) / (1f * cosThetaT + 1/glassRef * CosTheta);
+            reflectancePara = reflectancePara * reflectancePara;
+            return (0.5f * (reflectanceOrtho + reflectancePara));
+        }
+        return 0f;
     }
 }
