@@ -27,16 +27,15 @@ Anti-aliasing
 | Raytracer.cs --> AntiAliasing()
 
 Textures
-| 
-|
-|
-|
+| We implemented textures for planes, using two perpendicular vectors on the plane we determine x and y coordinates
+| depending on the location of the intersection and use these coordinates to get the right color from a 
+| specified texture.
+| If no colors are specified the plane will get the default chessboard coloring.
 
-Refraction/absorption
-|
-|
-|
-|
+Refraction
+|We added refraction in glass spheres. The refraction is calculated using a specific refraction index (1.52 by default)
+|Using fresnel calculations we make sure that the glass sphere partially reflects a ray and partially transmits it.
+
 
 Acceleration structure
 |
