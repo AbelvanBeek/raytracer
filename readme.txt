@@ -73,6 +73,8 @@ Textures
 
 Refraction
 |We added refraction in glass spheres. The refraction is calculated using a specific refraction index (1.52 by default)
+|A ray that enters or leaves a glass will have his direction normal modified according to this number.
+| 
 |Using fresnel calculations we make sure that the glass sphere partially reflects a ray and partially transmits it.
 
 Acceleration structure
